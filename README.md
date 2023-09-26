@@ -15,34 +15,38 @@ Collection of functions and aliases for ROS2 development
 - Bash or Zsh
 
 # Installation
-
-- Clone the repo: `git clone https://github.com/kimushun1101/ros2-aliases.git PATH_TO_CLONE`  
-  For example:
-  ```
-  git clone https://github.com/kimushun1101/ros2-aliases.git ~/ros2-aliases
-  ```
-
 Bash:
-- Add ros2_aliases.bash to bashrc with your ROS_WORKSPACE: `echo 'source PATH_TO_CLONE/ros2_aliases.bash ROS_WORKSPACE' >> ~/.bashrc`  
-  For example:
-  ```
-  echo 'source ~/ros2-aliases/ros2_aliases.bash ~/ros2_ws' >> ~/.bashrc
-  ```
-- (Optional) The 2nd argument sets colcon build command :
-  ```
-  echo 'source ~/ros2-aliases/ros2_aliases.bash ~/ros2_ws "colcon build --symlink-install --parallel-workers $(nproc) --cmake-args -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=0"' >> ~/.bashrc
-  ```
+1. Clone the repo: `git clone https://github.com/kimushun1101/ros2-aliases.git PATH_TO_CLONE`  
+    For example:
+    ```
+    git clone https://github.com/kimushun1101/ros2-aliases.git ~/.ros2-aliases
+    ```
+2. Add ros2_aliases.bash to bashrc with your ROS_WORKSPACE: `echo 'source PATH_TO_CLONE/ros2_aliases.bash ROS_WORKSPACE' >> ~/.bashrc`  
+    For example:
+    ```
+    echo 'source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws' >> ~/.bashrc
+    ```
+3. (Optional) The 2nd argument sets colcon build command :
+    ```
+    echo 'source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws "colcon build --symlink-install --parallel-workers $(nproc) --cmake-args -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=0"' >> ~/.bashrc
+    ```
 
-Zsh:
-- help wanted
+Zsh: Help wanted
+
+# Uninstall
+
+Delete `source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws` in your `~/.bashrc` then execute the following command.
+```
+rm -rf ~/.ros2-aliases
+```
 
 # Usage
 
-`rahelp` shows `ros2_aliases help`.  
-`raload` loads `ros2_aliases config`.  
-`roscd` changes the working directory into the selected package directory under `$ROS_WORKSPACE/src`.  
-`chcbc` changes colcon build command with its arguments.
-`chrdi` changes ROS_DOMAIN_ID. If the argument is 0, ROS_LOCALHOST_ONLY=1 is set.
+- `rahelp` shows `ros2_aliases help`. **(Important!)**
+- `raload` loads `ros2_aliases config`.  
+- `roscd` changes the working directory into the selected package directory under `$ROS_WORKSPACE/src`.  
+- `chcbc` changes colcon build command with its arguments.
+- `chrdi` changes ROS_DOMAIN_ID. If the argument is 0, ROS_LOCALHOST_ONLY=1 is set.
 
 ## Executable
 
