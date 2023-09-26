@@ -21,7 +21,7 @@ Bash:
     ```
     git clone https://github.com/kimushun1101/ros2-aliases.git ~/.ros2-aliases
     ```
-2. Add ros2_aliases.bash to bashrc with your ROS_WORKSPACE: `echo 'source PATH_TO_CLONE/ros2_aliases.bash ROS_WORKSPACE' >> ~/.bashrc`  
+2. Add ros2_aliases.bash to bashrc with your ROS_WORKSPACE: `echo 'source PATH_TO_CLONE/ros2_aliases.bash $ROS_WORKSPACE' >> ~/.bashrc`  
     For example:
     ```
     echo 'source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws' >> ~/.bashrc
@@ -35,7 +35,7 @@ Zsh: Help wanted
 
 # Uninstall
 
-Delete `source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws` in your `~/.bashrc` then execute the following command.
+Delete `source ~/.ros2-aliases/ros2_aliases.bash $ROS_WORKSPACE` in your `~/.bashrc` then execute the following command.
 ```
 rm -rf ~/.ros2-aliases
 ```
