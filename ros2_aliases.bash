@@ -26,7 +26,7 @@ export ROS2_ALIASES=$BASH_SOURCE
 export ROS_DISTRO=humble
 
 function red  { echo -e "\033[31m$1\033[m"; }
-function blue { echo -e "\033[34m$1\033[m"; }
+function green { echo -e "\033[32m$1\033[m"; }
 function cyan { echo -e "\033[36m$1\033[m"; }
 
 if [ $# = 0 ]; then
@@ -81,19 +81,19 @@ fi
 
 # ros2 aliases help
 function rahelp {
-  blue "---change environments---"
+  green "--- change environments ---"
   echo "`cyan raload` : search and load config for ros2-aliases"
   echo "`cyan chws\ PATH_TO_WORKSPACE` : change ROS 2 workspace"
   echo "`cyan chcbc\ COLCON_BUILD_COMMAND` : change colcon build command with its arguments"
   echo "`cyan chrdi\ ROS_DOMAIN_ID` : change ROS_DOMAIN_ID and ROS_LOCALHOST_ONLY"
-  blue "---colcon build---"
+  green "--- colcon build ---"
   echo "`cyan cb`    : colcon build"
   echo "`cyan cbp`   : colcon build with packages select"
   echo "`cyan cbcc`   : colcon build with clean cache"
   echo "`cyan cbcf`   : colcon build with clean first"
-  blue "---roscd---"
+  green "--- roscd ---"
   echo "`cyan roscd` : cd to the selected package"
-  blue "---ROS\ CLI---"
+  green "--- ROS CLI ---"
   echo "`cyan rnlist` : ros2 node list"
   echo "`cyan rninfo` : ros2 node info"
   echo "`cyan rtlist` : ros2 topic list"
@@ -102,13 +102,16 @@ function rahelp {
   echo "`cyan rplist` : ros2 param list"
   echo "`cyan rpget`  : ros2 param get"
   echo "`cyan rpset`  : ros2 param set"
-  blue "---TF---"
+  green "--- TF ---"
   echo "`cyan view_frames\ \(namespace\)` : ros2 run tf2_tools view_frames"
   echo "`cyan tf_echo\ \[source_frame\]\ \[target_frame\]\ \(namespace\)` : ros2 run tf2_ros tf2_echo"
-  blue "---rosdep---"
+  green "--- rosdep ---"
   echo "`cyan rosdep_install` : rosdep install"
-  blue "---offical---"
+  green "--- offical ---"
   echo "`cyan "ros2 -h"` : The Official help"
+  green "--- current settings ---"
+  echo "`cyan ROS_WORKSPACE` : "$ROS_WORKSPACE""
+  echo "`cyan COLCON_BUILD_CMD` : "$COLCON_BUILD_CMD""
 }
 
 # ---change environments---
