@@ -27,15 +27,16 @@ Bash:
     echo 'source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws' >> ~/.bashrc
     ```
 3. (Optional) The 2nd argument sets colcon build command :
+    Edit `~/.bashrc` as follows.
     ```
-    echo 'source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws "colcon build --symlink-install --parallel-workers $(nproc) --cmake-args -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=0"' >> ~/.bashrc
+    source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws "colcon build --symlink-install --parallel-workers $(nproc) --cmake-args -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=0"
     ```
 
 Zsh: Help wanted
 
 # Uninstall
 
-Delete `source ~/.ros2-aliases/ros2_aliases.bash $ROS_WORKSPACE` in your `~/.bashrc` then execute the following command.
+Delete `source ~/.ros2-aliases/ros2_aliases.bash $ROS_WORKSPACE` in `~/.bashrc` then execute the following command.
 ```
 rm -rf ~/.ros2-aliases
 ```
