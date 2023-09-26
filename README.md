@@ -34,16 +34,9 @@ Bash:
 
 Zsh: Help wanted
 
-# Uninstall
-
-Delete `source ~/.ros2-aliases/ros2_aliases.bash $ROS_WORKSPACE` in `~/.bashrc` then execute the following command.
-```
-rm -rf ~/.ros2-aliases
-```
-
 # Usage
 
-- `rahelp` shows `ros2_aliases help`. **(Important!)**
+- `rahelp` shows `ros2_aliases help`. **(Important!) Just remember this.**
 - `raload` loads `ros2_aliases config`.  
 - `roscd` changes the working directory into the selected package directory under `$ROS_WORKSPACE/src`.  
 - `chcbc` changes colcon build command with its arguments.
@@ -106,7 +99,14 @@ rm -rf ~/.ros2-aliases
 | --- | --- |
 | `cd $ROS_WORKSPACE` && `rosdep install --from-paths src --ignore-src -y` | `rosdep_install` |
 
-## Reference
+# Uninstall
+
+Delete `source ~/.ros2-aliases/ros2_aliases.bash $ROS_WORKSPACE` in `~/.bashrc` then execute the following command.
+```
+rm -rf ~/.ros2-aliases
+```
+
+# Reference
 
 - `ros2_utils.bash` : https://github.com/tonynajjar/ros2-aliases by Tony Najjar
 - `yaml.sh` : https://github.com/jasperes/bash-yaml by Jonathan Peres
