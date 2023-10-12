@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1003
 
 # MIT License
 
@@ -23,8 +24,6 @@
 # SOFTWARE.
 
 # from https://github.com/jasperes/bash-yaml/blob/master/script/yaml.sh
-
-# shellcheck disable=SC1003
 
 # Based on https://gist.github.com/pkuczynski/8665367
 
@@ -53,7 +52,7 @@ parse_yaml() {
             for (i in vname) {if (i > indent) {delete vname[i]}}
                 if (length($3) > 0) {
                     vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
-                    # printf("%s%s%s%s=(\"%s\")\n", "'"$prefix"'",vn, $2, conj[indent-1], $3);
+                    printf("%s%s%s%s=(\"%s\")\n", "'"$prefix"'",vn, $2, conj[indent-1], $3);
                 }
             }' |
             sed -e 's/_=/+=/g' |

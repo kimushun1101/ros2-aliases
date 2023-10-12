@@ -1,5 +1,6 @@
 Description: "This is a sample that reads a yaml file for ros2-aliases.
   Please refer to https://github.com/kimushun1101/ros2-aliases"
+
 ROS2_ALIASES:
   # # Full path description
   ROS_WORKSPACE: ${HOME}/ros2_ws

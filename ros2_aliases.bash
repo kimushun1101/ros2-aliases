@@ -39,17 +39,20 @@ fi
 
 # config file load function
 function load_config_yaml {
-  echo $1
+  local yaml_file=$1
   source "`dirname $ROS2_ALIASES`/yaml.sh"
-  eval "$(echo "$(parse_yaml $1)" | sed 's/ROS2_ALIASES_ENVIRONMENT_VARIABLES_\(.*\)=\(.*\)/export \1=\2/g')"
+  local yaml_string
+  yaml_string="$(parse_yaml "$yaml_file")"
+  eval "$(echo "$yaml_string" | sed 's/ROS2_ALIASES_ENVIRONMENT_VARIABLES_\(.*\)=\(.*\)/export \1=\2/g')"
   export ROS_WORKSPACE=$(eval echo "$ROS2_ALIASES_ROS_WORKSPACE")
   export COLCON_BUILD_CMD=$(eval echo "$ROS2_ALIASES_COLCON_BUILD_CMD")
+  unset_variables "$yaml_string"
 }
 
 # arguments handling
 case "$1" in
   *.yaml | *.yml )
-    load_config_yaml "$1"
+    load_config_yaml "$1" > /dev/null
     ;;
   * ) 
     export ROS_WORKSPACE=$1
@@ -120,9 +123,11 @@ function raload {
   if [ -n "$CONFIG_FILE" ]; then
     if [[ "$CONFIG_FILE" =~ \.sh$|\.bash$ ]]; then
       source $CONFIG_FILE
-    fi
-    if [[ "$CONFIG_FILE" =~ \.yaml$|\.yml$ ]]; then
-      load_config_yaml "$CONFIG_FILE"
+    elif [[ "$CONFIG_FILE" =~ \.yaml$|\.yml$ ]]; then
+      load_config_yaml "$CONFIG_FILE" > /dev/null
+    else
+      red "*.sh, *.bash, *.yml, or *.yaml is required.*"
+      return
     fi
     cyan "Load $CONFIG_FILE"
   fi
