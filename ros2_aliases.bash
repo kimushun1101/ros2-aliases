@@ -209,10 +209,8 @@ function cbp {
   history -s "cbp $pkg_name"
 }
 _pkg_name_complete() {
-  local cur prev opts
-  _get_comp_words_by_ref cur prev
-  opts=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done) # tha same as $pkg_name
-  COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+  local pkg_names=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done)
+  COMPREPLY=( $(compgen -W "$pkg_names" -- "${COMP_WORDS[$COMP_CWORD]}") )
 }
 complete -F _pkg_name_complete cbp
 
@@ -230,10 +228,8 @@ function roscd {
   cd $pkg_dir
 }
 _pkg_name_sub_directory_complete() {
-  local cur prev opts
-  _get_comp_words_by_ref cur prev
-  opts=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}') # tha same as $pkg_dir_name
-  COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+  local pkg_dir_names=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}')
+  COMPREPLY=( $(compgen -W "$pkg_dir_names" -- "${COMP_WORDS[$COMP_CWORD]}") )
 }
 complete -o nospace -F _pkg_name_sub_directory_complete roscd
 
