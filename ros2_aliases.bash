@@ -31,9 +31,9 @@ function cyan { echo -e "\033[36m$1\033[m"; }
 
 if [ $# = 0 ]; then
   red "[ros2 aliases] Give at least one path as an argument."
-  red "[Usage 1] source PATH_TO_CLONE/ros2_aliases.bash ROS_WORKSPACE"
-  red "[Usage 2] source PATH_TO_CLONE/ros2_aliases.bash ROS_WORKSPACE COLCON_BUILD_CMD"
-  red "[Usage 3] source PATH_TO_CLONE/ros2_aliases.bash CONFIG_FILE"
+  red "[Usage 1] source PATH_TO_CLONE/ros2_aliases.bash PATH_TO_ROS_WORKSPACE"
+  red "[Usage 2] source PATH_TO_CLONE/ros2_aliases.bash PATH_TO_ROS_WORKSPACE STRING_OF_COLCON_BUILD_CMD"
+  red "[Usage 3] source PATH_TO_CLONE/ros2_aliases.bash PATH_TO_CONFIG_FILE"
   return
 fi
 
@@ -41,8 +41,7 @@ fi
 function load_config_yaml {
   local yaml_file=$1
   source "`dirname $ROS2_ALIASES`/yaml.sh"
-  local yaml_string
-  yaml_string="$(parse_yaml "$yaml_file")"
+  local yaml_string="$(parse_yaml "$yaml_file")"
   eval "$(echo "$yaml_string" | sed 's/ROS2_ALIASES_ENVIRONMENT_VARIABLES_\(.*\)=\(.*\)/export \1=\2/g')"
   export ROS_WORKSPACE=$(eval echo "$ROS2_ALIASES_ROS_WORKSPACE")
   export COLCON_BUILD_CMD=$(eval echo "$ROS2_ALIASES_COLCON_BUILD_CMD")
@@ -183,11 +182,11 @@ function cb {
 }
 function cbp {
   if [ $# -eq 0 ]; then
-    PKG=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
+    local PKG=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
     [[ -z "$PKG" ]] && return
-    CMD="$COLCON_BUILD_CMD --packages-select $PKG"
+    local CMD="$COLCON_BUILD_CMD --packages-select $PKG"
   else
-    CMD="$COLCON_BUILD_CMD --packages-select $@"
+    local CMD="$COLCON_BUILD_CMD --packages-select $@"
   fi
   colcon_build_command_set "cbp $@" "$CMD"
 }
@@ -195,7 +194,7 @@ function cbcc {
   colcon_build_command_set "cbcc" "$COLCON_BUILD_CMD --cmake-clean-cache"
 }
 function cbcf {
-  CMD="$COLCON_BUILD_CMD --cmake-clean-first"
+  local CMD="$COLCON_BUILD_CMD --cmake-clean-first"
   cyan $CMD
   read -p "Do you want to execute? (y:Yes/n:No): " yn
   case "$yn" in
@@ -207,15 +206,14 @@ function cbcf {
 
 # ---roscd---
 function roscd {
-  local PKG_DIR_NAME PKG_DIR
   if [ $# -eq 0 ]; then
-    PKG_DIR_NAME=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}' | fzf)
+    local PKG_DIR_NAME=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}' | fzf)
     [[ -z "$PKG_DIR_NAME" ]] && cd $ROS_WORKSPACE && return
     history -s "roscd $PKG_DIR_NAME"
   else
-    PKG_DIR_NAME=$1
+    local PKG_DIR_NAME=$1
   fi
-  PKG_DIR=$(find $ROS_WORKSPACE/src -name $PKG_DIR_NAME | awk '{print length() ,$0}' | sort -n | awk '{ print  $2 }' | head -n 1)
+  local PKG_DIR=$(find $ROS_WORKSPACE/src -name $PKG_DIR_NAME | awk '{print length() ,$0}' | sort -n | awk '{ print  $2 }' | head -n 1)
   [[ -z $PKG_DIR ]] && red "$PKG_DIR_NAME : No such package" && return
   cd $PKG_DIR
 }
@@ -231,7 +229,7 @@ alias rpkgexe="ros2 pkg executables"
 function rishow {
   local INTERFACE=$(ros2 interface list | fzf | sed 's/ //g')
   [[ -z "$INTERFACE" ]] && return
-  CMD="ros2 interface show $INTERFACE"
+  local CMD="ros2 interface show $INTERFACE"
   echo $CMD
   $CMD
   history -s rishow
