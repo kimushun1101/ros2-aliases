@@ -77,9 +77,9 @@ fi
 # source other scripts
 source "`dirname $ROS2_ALIASES`/ros2_utils.bash"
 source /opt/ros/$ROS_DISTRO/setup.bash
-WS_SETUP_FILE=$ROS_WORKSPACE/install/setup.bash
-if [ -e $WS_SETUP_FILE ]; then
-  source $WS_SETUP_FILE
+local ws_setup_file=$ROS_WORKSPACE/install/setup.bash
+if [ -e $ws_setup_file ]; then
+  source $ws_setup_file
 fi
 
 # ros2 aliases help
@@ -119,7 +119,7 @@ function rahelp {
 
 # ---change environments---
 function raload {
-  CONFIG_FILE=`find ~ \( -path "$HOME/.config" -o -name "ros2_aliases.bash" \) -prune -o -type f \( -name "*.sh" -o -name "*.bash" -o -name "*.yaml" -o -name "*.yml" \) -exec grep -l "ROS2_ALIASES" {} + | fzf`
+  local CONFIG_FILE=`find ~ \( -path "$HOME/.config" -o -name "ros2_aliases.bash" \) -prune -o -type f \( -name "*.sh" -o -name "*.bash" -o -name "*.yaml" -o -name "*.yml" \) -exec grep -l "ROS2_ALIASES" {} + | fzf`
   if [ -n "$CONFIG_FILE" ]; then
     if [[ "$CONFIG_FILE" =~ \.sh$|\.bash$ ]]; then
       source $CONFIG_FILE
@@ -135,7 +135,16 @@ function raload {
 
 # change ROS 2 workspace
 function chws {
-  source $ROS2_ALIASES $1
+  if [ -n "$1" ]; then
+    cd $1 > /dev/null
+  fi
+  local arg=$(pwd)
+  if [ ! -d "$arg/src" ]; then
+    red "[ros2 aliases] No src directory in the workspace : $arg"
+    return
+  fi
+  ROS_WORKSPACE=$arg
+  echo "`cyan ROS_WORKSPACE` : "$ROS_WORKSPACE""
 }
 
 # change colcon build

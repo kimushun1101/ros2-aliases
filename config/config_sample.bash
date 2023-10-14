@@ -6,8 +6,8 @@ ROS_WORKSPACE="$HOME/ros2_ws" # In the case of describing the full path
 COLCON_BUILD_CMD="colcon build --symlink-install --parallel-workers $(nproc)"
 if [ -n "$ROS2_ALIASES" ]; then
   source $ROS2_ALIASES $ROS_WORKSPACE "$COLCON_BUILD_CMD"
-else
-  echo -e "\033[33mIf you want to activate ros2-aliases, refer to https://github.com/kimushun1101/ros2-aliases\033[m"
+# else
+#   echo -e "\033[33mIf you want to activate ros2-aliases, refer to https://github.com/kimushun1101/ros2-aliases\033[m"
 fi
 # the end of ros2-aliases
 
