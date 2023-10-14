@@ -207,25 +207,17 @@ function cbcf {
 
 # ---roscd---
 function roscd {
+  local PKG_DIR_NAME PKG_DIR
   if [ $# -eq 0 ]; then
-    cd $ROS_WORKSPACE
-    return
+    PKG_DIR_NAME=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}' | fzf)
+    [[ -z "$PKG_DIR_NAME" ]] && cd $ROS_WORKSPACE && return
+    history -s "roscd $PKG_DIR_NAME"
+  else
+    PKG_DIR_NAME=$1
   fi
-  PKG_DIR_NAME=$1
   PKG_DIR=$(find $ROS_WORKSPACE/src -name $PKG_DIR_NAME | awk '{print length() ,$0}' | sort -n | awk '{ print  $2 }' | head -n 1)
-  if [ -z $PKG_DIR ]; then
-    red "$PKG_DIR_NAME : No such package"
-    return
-  fi
+  [[ -z $PKG_DIR ]] && red "$PKG_DIR_NAME : No such package" && return
   cd $PKG_DIR
-}
-
-function roscd_find {
-  PKG_DIR_NAME=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}' | fzf)
-  [[ -z "$PKG_DIR_NAME" ]] && return
-  CMD="roscd $PKG_DIR_NAME"
-  cyan "$CMD"
-  history -s $CMD
 }
 
 # ---rosdep---
