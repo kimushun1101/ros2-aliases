@@ -39,9 +39,8 @@ fi
 
 # config file load function
 function load_ros2_aliases_config_yaml {
-  local yaml_file=$1
   source "`dirname $ROS2_ALIASES`/yaml.sh"
-  local yaml_string="$(parse_yaml "$yaml_file")"
+  local yaml_string="$(parse_yaml "$1")"
   eval "$(echo "$yaml_string" | sed 's/ROS2_ALIASES_ENVIRONMENT_VARIABLES_\(.*\)=\(.*\)/export \1=\2/g')"
   export ROS_WORKSPACE=$(eval echo "$ROS2_ALIASES_ROS_WORKSPACE")
   export COLCON_BUILD_CMD=$(eval echo "$ROS2_ALIASES_COLCON_BUILD_CMD")
@@ -136,12 +135,12 @@ function chws {
   if [ -n "$1" ]; then
     cd $1 > /dev/null
   fi
-  local arg=$(pwd)
-  if [ ! -d "$arg/src" ]; then
-    red "[ros2 aliases] No src directory in the workspace : $arg"
+  local workspace_candidate=$(pwd)
+  if [ ! -d "$workspace_candidate/src" ]; then
+    red "[ros2 aliases] No src directory in the workspace : $workspace_candidate"
     return
   fi
-  ROS_WORKSPACE=$arg
+  ROS_WORKSPACE=$workspace_candidate
   echo "`cyan ROS_WORKSPACE` : "$ROS_WORKSPACE""
 }
 
@@ -188,31 +187,31 @@ function cbcc {
 }
 
 function cbcf {
-  local CMD="$COLCON_BUILD_CMD --cmake-clean-first"
-  cyan "$CMD"
+  local cmd="$COLCON_BUILD_CMD --cmake-clean-first"
+  cyan "$cmd"
   read -p "Do you want to execute? (y:Yes/n:No): " yn
   case "$yn" in
     [yY]*);;
     *) return ;;
   esac
-  colcon_build_command_set "$CMD"
+  colcon_build_command_set "$cmd"
   history -s "cbcf"
 }
 
 function cbp {
   if [ $# -eq 0 ]; then
-    local PKG_NAME=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
-    [[ -z "$PKG_NAME" ]] && return
+    local pkg_name=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
+    [[ -z "$pkg_name" ]] && return
   else
-    local PKG_NAME="$@"
+    local pkg_name="$@"
   fi
-  colcon_build_command_set "$COLCON_BUILD_CMD --packages-select $PKG_NAME"
-  history -s "cbp $PKG_NAME"
+  colcon_build_command_set "$COLCON_BUILD_CMD --packages-select $pkg_name"
+  history -s "cbp $pkg_name"
 }
 _pkg_name_complete() {
   local cur prev opts
   _get_comp_words_by_ref cur prev
-  opts=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done) # tha same as $PKG_NAME
+  opts=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done) # tha same as $pkg_name
   COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
 }
 complete -F _pkg_name_complete cbp
@@ -220,20 +219,20 @@ complete -F _pkg_name_complete cbp
 # ---roscd---
 function roscd {
   if [ $# -eq 0 ]; then
-    local PKG_DIR_NAME=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}' | fzf)
-    [[ -z "$PKG_DIR_NAME" ]] && cd $ROS_WORKSPACE && return
-    history -s "roscd $PKG_DIR_NAME"
+    local pkg_dir_name=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}' | fzf)
+    [[ -z "$pkg_dir_name" ]] && cd $ROS_WORKSPACE && return
+    history -s "roscd $pkg_dir_name"
   else
-    local PKG_DIR_NAME=$1
+    local pkg_dir_name=$1
   fi
-  local PKG_DIR=$(find $ROS_WORKSPACE/src -name $PKG_DIR_NAME | awk '{print length() ,$0}' | sort -n | awk '{ print  $2 }' | head -n 1)
-  [[ -z $PKG_DIR ]] && red "$PKG_DIR_NAME : No such package" && return
-  cd $PKG_DIR
+  local pkg_dir=$(find $ROS_WORKSPACE/src -name $pkg_dir_name | awk '{print length() ,$0}' | sort -n | awk '{ print  $2 }' | head -n 1)
+  [[ -z $pkg_dir ]] && red "$pkg_dir_name : No such package" && return
+  cd $pkg_dir
 }
 _pkg_name_sub_directory_complete() {
   local cur prev opts
   _get_comp_words_by_ref cur prev
-  opts=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}') # tha same as $PKG_DIR_NAME
+  opts=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}') # tha same as $pkg_dir_name
   COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
 }
 complete -o nospace -F _pkg_name_sub_directory_complete roscd
@@ -249,9 +248,9 @@ alias rpkgexe="ros2 pkg executables"
 function rishow {
   local INTERFACE=$(ros2 interface list | fzf | sed 's/ //g')
   [[ -z "$INTERFACE" ]] && return
-  local CMD="ros2 interface show $INTERFACE"
-  echo $CMD
-  $CMD
+  local cmd="ros2 interface show $INTERFACE"
+  echo $cmd
+  $cmd
   history -s rishow
-  history -s $CMD
+  history -s $cmd
 }
