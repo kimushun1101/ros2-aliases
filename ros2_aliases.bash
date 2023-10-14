@@ -171,38 +171,51 @@ function chrdi {
 # ---colcon build---
 function colcon_build_command_set {
   cd $ROS_WORKSPACE > /dev/null
-  cyan "$2"
-  $2
+  cyan "$@"
+  $@
   source ./install/setup.bash
-  history -s $1
-  history -s $2
+  history -s "$@"
 }
+
 function cb {
-  colcon_build_command_set "cb" "$COLCON_BUILD_CMD"
+  colcon_build_command_set "$COLCON_BUILD_CMD"
+  history -s "cb"
 }
-function cbp {
-  if [ $# -eq 0 ]; then
-    local PKG=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
-    [[ -z "$PKG" ]] && return
-    local CMD="$COLCON_BUILD_CMD --packages-select $PKG"
-  else
-    local CMD="$COLCON_BUILD_CMD --packages-select $@"
-  fi
-  colcon_build_command_set "cbp $@" "$CMD"
-}
+
 function cbcc {
-  colcon_build_command_set "cbcc" "$COLCON_BUILD_CMD --cmake-clean-cache"
+  colcon_build_command_set "$COLCON_BUILD_CMD --cmake-clean-cache"
+  history -s "cbcc"
 }
+
 function cbcf {
   local CMD="$COLCON_BUILD_CMD --cmake-clean-first"
-  cyan $CMD
+  cyan "$CMD"
   read -p "Do you want to execute? (y:Yes/n:No): " yn
   case "$yn" in
     [yY]*);;
     *) return ;;
   esac
-  colcon_build_command_set "cbcf" "$CMD"
+  colcon_build_command_set "$CMD"
+  history -s "cbcf"
 }
+
+function cbp {
+  if [ $# -eq 0 ]; then
+    local PKG_NAME=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
+    [[ -z "$PKG_NAME" ]] && return
+  else
+    local PKG_NAME="$@"
+  fi
+  colcon_build_command_set "$COLCON_BUILD_CMD --packages-select $PKG_NAME"
+  history -s "cbp $PKG_NAME"
+}
+_pkg_name_complete() {
+  local cur prev opts
+  _get_comp_words_by_ref cur prev
+  opts=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done) # tha same as $PKG_NAME
+  COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+}
+complete -F _pkg_name_complete cbp
 
 # ---roscd---
 function roscd {
@@ -217,6 +230,13 @@ function roscd {
   [[ -z $PKG_DIR ]] && red "$PKG_DIR_NAME : No such package" && return
   cd $PKG_DIR
 }
+_pkg_name_sub_directory_complete() {
+  local cur prev opts
+  _get_comp_words_by_ref cur prev
+  opts=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}') # tha same as $PKG_DIR_NAME
+  COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+}
+complete -o nospace -F _pkg_name_sub_directory_complete roscd
 
 # ---rosdep---
 alias rosdep_install="cd $ROS_WORKSPACE && rosdep install --from-paths src --ignore-src -y"
