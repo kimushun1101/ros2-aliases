@@ -171,7 +171,7 @@ function chrdi {
 
 # ---colcon build---
 function colcon_build_command_set {
-  cd $ROS_WORKSPACE
+  cd $ROS_WORKSPACE > /dev/null
   cyan "$2"
   $2
   source ./install/setup.bash
@@ -205,24 +205,26 @@ function cbcf {
   colcon_build_command_set "cbcf" "$CMD"
 }
 
-
 # ---roscd---
 function roscd {
-  if [ $# -eq 1 ]; then
-    PKG_DIR_NAME=$1
-  else
-    PKG_DIR_NAME=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}' | fzf)
-    [[ -z "$PKG_DIR_NAME" ]] && return
-    cyan "roscd $PKG_DIR_NAME"
-  fi
-  PKG_DIR=$(find $ROS_WORKSPACE/src -name $PKG_DIR_NAME | awk '{print length() ,$0}' | sort -n | awk '{ print  $2 }' | head -n 1)
-  if [ -z $PKG_DIR ]; then
-    red "$PKG_DIR_NAME : No such directory"
+  if [ $# -eq 0 ]; then
+    cd $ROS_WORKSPACE
     return
   fi
-  CMD="cd $PKG_DIR"
-  $CMD
-  history -s "roscd $PKG_DIR_NAME"
+  PKG_DIR_NAME=$1
+  PKG_DIR=$(find $ROS_WORKSPACE/src -name $PKG_DIR_NAME | awk '{print length() ,$0}' | sort -n | awk '{ print  $2 }' | head -n 1)
+  if [ -z $PKG_DIR ]; then
+    red "$PKG_DIR_NAME : No such package"
+    return
+  fi
+  cd $PKG_DIR
+}
+
+function roscd_find {
+  PKG_DIR_NAME=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}' | fzf)
+  [[ -z "$PKG_DIR_NAME" ]] && return
+  CMD="roscd $PKG_DIR_NAME"
+  cyan "$CMD"
   history -s $CMD
 }
 
