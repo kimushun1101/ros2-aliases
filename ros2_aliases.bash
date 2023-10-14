@@ -38,7 +38,7 @@ if [ $# = 0 ]; then
 fi
 
 # config file load function
-function load_config_yaml {
+function load_ros2_aliases_config_yaml {
   local yaml_file=$1
   source "`dirname $ROS2_ALIASES`/yaml.sh"
   local yaml_string="$(parse_yaml "$yaml_file")"
@@ -51,7 +51,7 @@ function load_config_yaml {
 # arguments handling
 case "$1" in
   *.yaml | *.yml )
-    load_config_yaml "$1" > /dev/null
+    load_ros2_aliases_config_yaml "$1" > /dev/null
     ;;
   * ) 
     export ROS_WORKSPACE=$1
@@ -122,7 +122,7 @@ function raload {
     if [[ "$CONFIG_FILE" =~ \.sh$|\.bash$ ]]; then
       source $CONFIG_FILE
     elif [[ "$CONFIG_FILE" =~ \.yaml$|\.yml$ ]]; then
-      load_config_yaml "$CONFIG_FILE" > /dev/null
+      load_ros2_aliases_config_yaml "$CONFIG_FILE" > /dev/null
     else
       red "*.sh, *.bash, *.yml, or *.yaml is required.*"
       return

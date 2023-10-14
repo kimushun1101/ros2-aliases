@@ -17,8 +17,8 @@ export MY_ENV_1=1
 export MY_ENV_2=10
 
 # ROS_VARIABLES
-export ROS_DOMAIN_ID=0
-export ROS_OST_ONLY=1
+export ROS_DOMAIN_ID=30
+export ROS_OST_ONLY=0
 export ROS_LOG_DIR="~/.ros/log"
 export RCUTILS_LOGGING_USE_STDOUT=1
 export RCUTILS_COLORIZED_OUTPUT=1
