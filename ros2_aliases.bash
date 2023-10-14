@@ -77,9 +77,8 @@ fi
 # source other scripts
 source "`dirname $ROS2_ALIASES`/ros2_utils.bash"
 source /opt/ros/$ROS_DISTRO/setup.bash
-local ws_setup_file=$ROS_WORKSPACE/install/setup.bash
-if [ -e $ws_setup_file ]; then
-  source $ws_setup_file
+if [ -e "$ROS_WORKSPACE/install/setup.bash" ]; then
+  source $ROS_WORKSPACE/install/setup.bash
 fi
 
 # ros2 aliases help
