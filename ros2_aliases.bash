@@ -235,29 +235,13 @@ alias rosdep_install="cd $ROS_WORKSPACE && rosdep install --from-paths src --ign
 alias rpkgexe="ros2 pkg executables"
 
 # ---Pull request to ros2_utils---
-# ROS 2 run
-function rrun {
-  if [ $# -eq 0 ]; then
-    PKG_NAME=$(ros2 pkg list | fzf)
-    [[ -z "$PKG_NAME" ]] && return
-    history -s "rrun $PKG_NAME"
-    rrun $PKG_NAME
-  elif [ $# -eq 1 ]; then
-    PKG_AND_EXE=$(ros2 pkg executables | grep $1 | fzf)
-    [[ -z "$PKG_AND_EXE" ]] && return
-    CMD="ros2 run $PKG_AND_EXE"
-    echo "$CMD"
-    $CMD
-    history -s $CMD
-  fi
-}
-
 # ros2 interface
 function rishow {
-  INTERFACE=$(ros2 interface list | fzf | sed 's/ //g')
+  local INTERFACE=$(ros2 interface list | fzf | sed 's/ //g')
   [[ -z "$INTERFACE" ]] && return
   CMD="ros2 interface show $INTERFACE"
   echo $CMD
   $CMD
+  history -s rishow
   history -s $CMD
 }
