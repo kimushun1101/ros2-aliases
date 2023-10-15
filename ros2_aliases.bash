@@ -208,11 +208,10 @@ function cbcf {
 }
 
 function cbp {
-  if [ $# -eq 0 ]; then
-    local pkg_name=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
+  local pkg_name="$@"
+  if [ -z "$1" ]; then
+    pkg_name=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
     [[ -z "$pkg_name" ]] && return
-  else
-    local pkg_name="$@"
   fi
   colcon_build_command_set "$COLCON_BUILD_CMD --packages-select $pkg_name"
   history -s "cbp $pkg_name"
@@ -225,12 +224,12 @@ complete -F _pkg_name_complete cbp
 
 # ---roscd---
 function roscd {
-  if [ $# -eq 0 ]; then
-    local pkg_dir_name=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}' | fzf)
+  local pkg_dir_name=$1
+  if [ -z "$1" ]; then
+    pkg_dir_name=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}' | fzf)
     [[ -z "$pkg_dir_name" ]] && cd $ROS_WORKSPACE && return
+    history -s "roscd"
     history -s "roscd $pkg_dir_name"
-  else
-    local pkg_dir_name=$1
   fi
   local pkg_dir=$(find $ROS_WORKSPACE/src -name $pkg_dir_name | awk '{print length() ,$0}' | sort -n | awk '{ print  $2 }' | head -n 1)
   [[ -z $pkg_dir ]] && red "$pkg_dir_name : No such package" && return
@@ -249,6 +248,7 @@ alias rosdep_install="cd $ROS_WORKSPACE && rosdep install --from-paths src --ign
 alias rpkgexe="ros2 pkg executables"
 
 # ---Pull request to ros2_utils---
+# https://github.com/tonynajjar/ros2-aliases/pull/9
 # ros2 interface
 function rishow {
   local INTERFACE=$(ros2 interface list | fzf | sed 's/ //g')
