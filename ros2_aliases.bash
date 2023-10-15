@@ -87,12 +87,12 @@ function rahelp {
   echo "`cyan chcbc\ COLCON_BUILD_COMMAND` : change colcon build command with its arguments"
   echo "`cyan chrdi\ ROS_DOMAIN_ID` : change ROS_DOMAIN_ID and ROS_LOCALHOST_ONLY"
   green "--- colcon build ---"
-  echo "`cyan cb`    : colcon build"
-  echo "`cyan cbp`   : colcon build with packages select"
+  echo "`cyan cb`     : colcon build"
   echo "`cyan cbcc`   : colcon build with clean cache"
   echo "`cyan cbcf`   : colcon build with clean first"
+  echo "`cyan cbp`    : colcon build with packages select (Both fzf and tab completion are valid)"
   green "--- roscd ---"
-  echo "`cyan roscd` : cd to the selected package"
+  echo "`cyan roscd`  : cd to the selected package (Both fzf and tab completion are valid)"
   green "--- ROS CLI ---"
   echo "`cyan rnlist` : ros2 node list"
   echo "`cyan rninfo` : ros2 node info"
@@ -137,16 +137,19 @@ function raload {
 
 # change ROS 2 workspace
 function chws {
-  if [ -n "$1" ]; then
-    cd $1 > /dev/null
+  local workspace_candidate=$1
+  if [ -z "$1" ]; then
+    workspace_candidate=$(find $HOME -type d -name "*_ws" | fzf)
+    [[ -z "$workspace_candidate" ]] && return
   fi
-  local workspace_candidate=$(pwd)
   if [ ! -d "$workspace_candidate/src" ]; then
     red "[ros2 aliases] No src directory in the workspace : $workspace_candidate"
     return
   fi
   ROS_WORKSPACE=$workspace_candidate
   echo "`cyan ROS_WORKSPACE` : "$ROS_WORKSPACE""
+  history -s "chws"
+  history -s "chws $ROS_WORKSPACE"
 }
 
 # change colcon build
@@ -164,6 +167,7 @@ function chcbc {
 function chrdi {
   if [ $# != 1 ] || [ $1 -eq 0 ]; then
     export ROS_LOCALHOST_ONLY=1
+    echo "ROS_DOMAIN_ID=$1"
     echo "ROS_LOCALHOST_ONLY=1"
   else
     export ROS_LOCALHOST_ONLY=0
