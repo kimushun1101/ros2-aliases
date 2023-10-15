@@ -116,18 +116,23 @@ function rahelp {
 
 # ---change environments---
 function raload {
-  local CONFIG_FILE=`find ~ \( -path "$HOME/.config" -o -name "ros2_aliases.bash" \) -prune -o -type f \( -name "*.sh" -o -name "*.bash" -o -name "*.yaml" -o -name "*.yml" \) -exec grep -l "ROS2_ALIASES" {} + | fzf`
-  if [ -n "$CONFIG_FILE" ]; then
-    if [[ "$CONFIG_FILE" =~ \.sh$|\.bash$ ]]; then
-      source $CONFIG_FILE
-    elif [[ "$CONFIG_FILE" =~ \.yaml$|\.yml$ ]]; then
-      load_ros2_aliases_config_yaml "$CONFIG_FILE" > /dev/null
-    else
-      red "*.sh, *.bash, *.yml, or *.yaml is required.*"
-      return
-    fi
-    cyan "Load $CONFIG_FILE"
+  if [ -n "$1" ]; then
+    local config_file=$1
+  else
+    local config_file=`find ~ \( -path "$HOME/.config" -o -name "ros2_aliases.bash" \) -prune -o -type f \( -name "*.sh" -o -name "*.bash" -o -name "*.yaml" -o -name "*.yml" \) -exec grep -l "ROS2_ALIASES" {} + | fzf`
   fi
+  [[ -z "$config_file" ]] && return
+  if [[ "$config_file" =~ \.sh$|\.bash$ ]]; then
+    source $config_file
+  elif [[ "$config_file" =~ \.yaml$|\.yml$ ]]; then
+    load_ros2_aliases_config_yaml "$config_file" > /dev/null
+  else
+    red "*.sh, *.bash, *.yml, or *.yaml is required.*"
+    return
+  fi
+  cyan "Load $config_file"
+  history -s "raload"
+  history -s "raload $config_file"
 }
 
 # change ROS 2 workspace
