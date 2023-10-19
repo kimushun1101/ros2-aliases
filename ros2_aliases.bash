@@ -146,9 +146,9 @@ function chws {
     red "[ros2 aliases] No src directory in the workspace : $workspace_candidate"
     return
   fi
-  ROS_WORKSPACE=$workspace_candidate
+  cd $workspace_candidate
+  ROS_WORKSPACE=$(pwd)
   echo "`cyan ROS_WORKSPACE` : "$ROS_WORKSPACE""
-  history -s "chws"
   history -s "chws $ROS_WORKSPACE"
 }
 
@@ -182,17 +182,14 @@ function colcon_build_command_set {
   cyan "$@"
   $@
   source ./install/setup.bash
-  history -s "$@"
 }
 
 function cb {
   colcon_build_command_set "$COLCON_BUILD_CMD"
-  history -s "cb"
 }
 
 function cbcc {
   colcon_build_command_set "$COLCON_BUILD_CMD --cmake-clean-cache"
-  history -s "cbcc"
 }
 
 function cbcf {
@@ -204,7 +201,6 @@ function cbcf {
     *) return ;;
   esac
   colcon_build_command_set "$cmd"
-  history -s "cbcf"
 }
 
 function cbp {
@@ -228,18 +224,17 @@ function roscd {
   if [ -z "$1" ]; then
     pkg_dir_name=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}' | fzf)
     [[ -z "$pkg_dir_name" ]] && cd $ROS_WORKSPACE && return
-    history -s "roscd"
     history -s "roscd $pkg_dir_name"
   fi
   local pkg_dir=$(find $ROS_WORKSPACE/src -name $pkg_dir_name | awk '{print length() ,$0}' | sort -n | awk '{ print  $2 }' | head -n 1)
   [[ -z $pkg_dir ]] && red "$pkg_dir_name : No such package" && return
   cd $pkg_dir
 }
-_pkg_name_sub_directory_complete() {
+_pkg_directory_complete() {
   local pkg_dir_names=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}')
   COMPREPLY=( $(compgen -W "$pkg_dir_names" -- "${COMP_WORDS[$COMP_CWORD]}") )
 }
-complete -o nospace -F _pkg_name_sub_directory_complete roscd
+complete -o nospace -F _pkg_directory_complete roscd
 
 # ---rosdep---
 alias rosdep_install="cd $ROS_WORKSPACE && rosdep install --from-paths src --ignore-src -y"
