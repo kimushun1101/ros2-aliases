@@ -119,7 +119,7 @@ function raload {
   if [ -n "$1" ]; then
     local config_file=$1
   else
-    local config_file=`find ~ \( -path "$HOME/.config" -o -name "ros2_aliases.bash" \) -prune -o -type f \( -name "*.sh" -o -name "*.bash" -o -name "*.yaml" -o -name "*.yml" \) -exec grep -l "ROS2_ALIASES" {} + | fzf`
+    local config_file=`find ~ \( -path "$HOME/.config" -o -name "ros2_aliases.bash" \) -prune -o -type f -regex ".*\.\(sh\|bash\|yaml\|yml\)" -exec grep -l "ROS2_ALIASES" {} + | fzf`
   fi
   [[ -z "$config_file" ]] && return
   if [[ "$config_file" =~ \.sh$|\.bash$ ]]; then
