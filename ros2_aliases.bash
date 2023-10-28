@@ -242,6 +242,18 @@ alias rosdep_install="cd $ROS_WORKSPACE && rosdep install --from-paths src --ign
 # ---pkg---
 alias rpkgexe="ros2 pkg executables"
 
+# ---ros2 launch---
+function rlaunch {
+  local pkg_dir_name=$(find /opt/ros/$ROS_DISTRO/share $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}' | fzf)
+  [[ -z "$pkg_dir_name" ]] && return
+  local pkg_dir=$(find /opt/ros/$ROS_DISTRO/share $ROS_WORKSPACE/src -name $pkg_dir_name | awk '{print length() ,$0}' | sort -n | awk '{ print  $2 }' | head -n 1)
+  [[ -z "$pkg_dir/launch" ]] && red "$pkg_dir_name : No launch directory" && return
+  local launch_file=$(find $pkg_dir -type f -regex ".*launch.*\.\(py\|xml\|yaml\)" -exec basename {} \; | awk -F/ '{print $NF}' | fzf)
+  [[ -z $launch_file ]] && return
+  ros2 launch $pkg_dir_name $launch_file
+  history -s "ros2 launch $pkg_dir_name $launch_file"
+}
+
 # ---Pull request to ros2_utils---
 # https://github.com/tonynajjar/ros2-aliases/pull/9
 # ros2 interface
