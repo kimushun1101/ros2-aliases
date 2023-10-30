@@ -94,6 +94,8 @@ function rahelp {
   green "--- roscd ---"
   echo "`cyan roscd`  : cd to the selected package (Both fzf and tab completion are valid)"
   green "--- ROS CLI ---"
+  echo "`cyan rrun`  : ros2 run"
+  echo "`cyan rlaunch`  : ros2 launch"
   echo "`cyan rnlist` : ros2 node list"
   echo "`cyan rninfo` : ros2 node info"
   echo "`cyan rtlist` : ros2 topic list"
@@ -112,6 +114,7 @@ function rahelp {
   green "--- current settings ---"
   echo "`cyan ROS_WORKSPACE` : "$ROS_WORKSPACE""
   echo "`cyan COLCON_BUILD_CMD` : "$COLCON_BUILD_CMD""
+  echo "`cyan ROS_DOMAIN_ID` : "$ROS_DOMAIN_ID""
 }
 
 # ---change environments---

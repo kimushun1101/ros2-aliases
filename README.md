@@ -47,6 +47,7 @@ Zsh: Help wanted
 | Command | Alias |
 | --- | --- |
 | `ros2 run` | `rrun` |
+| `ros2 launch` | `rlaunch` |
 
 ## Topics
 
