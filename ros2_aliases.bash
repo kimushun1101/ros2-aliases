@@ -181,10 +181,12 @@ function chrdi {
 
 # ---colcon build---
 function colcon_build_command_set {
+  local current_dir=$PWD
   cd $ROS_WORKSPACE > /dev/null
   cyan "$@"
   $@
   source ./install/setup.bash
+  cd $current_dir
 }
 
 function cb {
