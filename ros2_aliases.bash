@@ -215,11 +215,25 @@ function cbp {
   colcon_build_command_set "$COLCON_BUILD_CMD --packages-select $pkg_name"
   history -s "cbp $pkg_name"
 }
+function ctp {
+  local pkg_name="$@"
+  if [ -z "$1" ]; then
+    pkg_name=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
+    [[ -z "$pkg_name" ]] && return
+  fi
+  cd $ROS_WORKSPACE > /dev/null
+  cbp $pkg_name
+  local cmd="colcon test --parallel-workers $(nproc) --packages-select $pkg_name"
+  cyan "$cmd" && $cmd
+  cmd="colcon test-result --verbose"
+  cyan "$cmd" && $cmd
+  history -s "ctp $pkg_name"
+}
 _pkg_name_complete() {
   local pkg_names=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done)
   COMPREPLY=( $(compgen -W "$pkg_names" -- "${COMP_WORDS[$COMP_CWORD]}") )
 }
-complete -F _pkg_name_complete cbp
+complete -F _pkg_name_complete cbp ctp
 
 # ---roscd---
 function roscd {
@@ -247,14 +261,14 @@ alias rpkgexe="ros2 pkg executables"
 
 # ---ros2 launch---
 function rlaunch {
-  local pkg_dir_name=$(find /opt/ros/$ROS_DISTRO/share $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}' | fzf)
-  [[ -z "$pkg_dir_name" ]] && return
-  local pkg_dir=$(find /opt/ros/$ROS_DISTRO/share $ROS_WORKSPACE/src -name $pkg_dir_name | awk '{print length() ,$0}' | sort -n | awk '{ print  $2 }' | head -n 1)
-  [[ -z "$pkg_dir/launch" ]] && red "$pkg_dir_name : No launch directory" && return
+  local pkg_name=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
+  [[ -z "$pkg_name" ]] && return
+  local pkg_dir=$(find /opt/ros/$ROS_DISTRO/share $ROS_WORKSPACE/install -name $pkg_name | awk '{print length() ,$0}' | sort -n | awk '{ print  $2 }' | head -n 1)
+  [[ -z "$pkg_dir/launch" ]] && red "$pkg_name : No launch directory" && return
   local launch_file=$(find $pkg_dir -type f -regex ".*launch.*\.\(py\|xml\|yaml\)" -exec basename {} \; | awk -F/ '{print $NF}' | fzf)
   [[ -z $launch_file ]] && return
-  ros2 launch $pkg_dir_name $launch_file
-  history -s "ros2 launch $pkg_dir_name $launch_file"
+  ros2 launch $pkg_name $launch_file
+  history -s "ros2 launch $pkg_name $launch_file"
 }
 
 # ---Pull request to ros2_utils---
