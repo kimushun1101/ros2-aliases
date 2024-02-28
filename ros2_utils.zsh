@@ -30,14 +30,14 @@
 
 function rrun {
   if [ $# -eq 0 ]; then
-    PKG_NAME=$(ros2 pkg list | fzf)
+    local PKG_NAME=$(ros2 pkg list | fzf)
     [[ -z "$PKG_NAME" ]] && return
     print -s rrun $PKG_NAME
     rrun $PKG_NAME
   elif [ $# -eq 1 ]; then
-    PKG_AND_EXE=$(ros2 pkg executables | grep $1 | fzf)
+    local PKG_AND_EXE=$(ros2 pkg executables | grep $1 | fzf)
     [[ -z "$PKG_AND_EXE" ]] && return
-    CMD=(ros2 run $PKG_AND_EXE)
+    local CMD=(ros2 run $PKG_AND_EXE)
     echo $CMD
     eval $CMD
     print -s rrun
@@ -48,7 +48,7 @@ function rrun {
 # Topics
 
 function rtlist {
-    CMD=(ros2 topic list)
+    local CMD=(ros2 topic list)
     echo $CMD
     $CMD
     print -s rtlist
@@ -56,7 +56,7 @@ function rtlist {
 }
 
 function rtecho {
-    TOPIC=$(ros2 topic list | fzf)
+    local TOPIC=$(ros2 topic list | fzf)
     [[ -z "$TOPIC" ]] && return
     CMD=(ros2 topic echo $TOPIC)
     echo $CMD
@@ -66,7 +66,7 @@ function rtecho {
 }
 
 function rtinfo {
-    TOPIC=$(ros2 topic list | fzf)
+    local TOPIC=$(ros2 topic list | fzf)
     [[ -z "$TOPIC" ]] && return
     CMD=(ros2 topic info -v $TOPIC)
     echo $CMD
@@ -78,7 +78,7 @@ function rtinfo {
 # Nodes
 
 function rnlist {
-    CMD=(ros2 node list)
+    local CMD=(ros2 node list)
     echo $CMD
     $CMD
     print -s rnlist
@@ -86,19 +86,46 @@ function rnlist {
 }
 
 function rninfo {
-    NODE=$(ros2 node list | fzf)
+    local NODE=$(ros2 node list | fzf)
     [[ -z "$NODE" ]] && return
-    CMD=(ros2 node info $NODE)
+    local CMD=(ros2 node info $NODE)
     echo $CMD
     $CMD
     print -s rninfo
     print -s $CMD
 }
 
+# TODO: Not working
+function rnkill {
+    local NODE_TO_KILL_RAW=$(ros2 node list | fzf)
+    [[ -z "$NODE_TO_KILL_RAW" ]] && return
+    local NODE_TO_KILL=(${NODE_TO_KILL_RAW//// })
+    NODE_TO_KILL=${NODE_TO_KILL[-1]} # extract last word from node name
+    NODE_TO_KILL=[${NODE_TO_KILL:0:1}]${NODE_TO_KILL:1}
+    # The method used is to parse the PID and use kill <PID>.
+    # If more than 1 PID is found, we abort to avoid killing other processes.
+    # The parsing checks for any process with the string [/]$NODE_TO_KILL.
+    # This can probably be optimized to always find the one node we are looking for.
+    local PROC_NB=$(ps aux | grep [/]$NODE_TO_KILL | wc -l)
+    if [ $PROC_NB -gt 1 ]; then
+        echo "This node name matched with more than 1 process. Not killing"
+        return
+    elif [ $PROC_NB -eq 0 ]; then
+        echo "No processes found matching this node name"
+        return
+    fi
+    local PROC_PID=$(ps aux | grep [/]$NODE_TO_KILL | awk '{print $2}')
+    local CMD=(kill $PROC_PID)
+    echo "Killing $NODE_TO_KILL_RAW with PID $PROC_PID"
+    $CMD
+    print -s rnlist
+    print -s $CMD
+}
+
 # Services
 
 function rslist {
-    CMD=(ros2 service list)
+    local CMD=(ros2 service list)
     echo $CMD
     $CMD
     print -s rslist
@@ -108,9 +135,9 @@ function rslist {
 # Parameters
 
 function rplist {
-    NODE=$(ros2 node list | fzf)
+    local NODE=$(ros2 node list | fzf)
     [[ -z "$NODE" ]] && return
-    CMD=(ros2 param list $NODE --param-type)
+    local CMD=(ros2 param list $NODE --param-type)
     echo $CMD
     $CMD
     print -s rplist
@@ -118,11 +145,11 @@ function rplist {
 }
 
 function rpget {
-    NODE=$(ros2 node list | fzf)
+    local NODE=$(ros2 node list | fzf)
     [[ -z "$NODE" ]] && return
-    PARAM=$(ros2 param list $NODE | fzf)
+    local PARAM=$(ros2 param list $NODE | fzf)
     [[ -z "$PARAM" ]] && return
-    CMD=(ros2 param get $NODE $PARAM)
+    local CMD=(ros2 param get $NODE $PARAM)
     echo $CMD
     $CMD
     print -s rpget
@@ -130,44 +157,29 @@ function rpget {
 }
 
 function rpset {
-    NODE=$(ros2 node list | fzf)
+    local NODE=$(ros2 node list | fzf)
     [[ -z "$NODE" ]] && return
-    PARAM=$(ros2 param list $NODE | fzf)
+    local PARAM=$(ros2 param list $NODE | fzf)
     [[ -z "$PARAM" ]] && return
     echo -n "value: "
     read VALUE
-    CMD=(ros2 param set $NODE $PARAM $VALUE)
+    local CMD=(ros2 param set $NODE $PARAM $VALUE)
     echo $CMD
     $CMD
     print -s rpset
     print -s $CMD
 }
 
-# TODO: Not working
-function rnkill {
-    NODE_TO_KILL_RAW=$(ros2 node list | fzf)
-    [[ -z "$NODE_TO_KILL_RAW" ]] && return
-    NODE_TO_KILL=(${NODE_TO_KILL_RAW//// })
-    NODE_TO_KILL=${NODE_TO_KILL[-1]} # extract last word from node name
-    NODE_TO_KILL=[${NODE_TO_KILL:0:1}]${NODE_TO_KILL:1}
-    # The method used is to parse the PID and use kill <PID>.
-    # If more than 1 PID is found, we abort to avoid killing other processes.
-    # The parsing checks for any process with the string [/]$NODE_TO_KILL.
-    # This can probably be optimized to always find the one node we are looking for.
-    PROC_NB=$(ps aux | grep [/]$NODE_TO_KILL | wc -l)
-    if [ $PROC_NB -gt 1 ]; then
-        echo "This node name matched with more than 1 process. Not killing"
-        return
-    elif [ $PROC_NB -eq 0 ]; then
-        echo "No processes found matching this node name"
-        return
-    fi
-    PROC_PID=$(ps aux | grep [/]$NODE_TO_KILL | awk '{print $2}')
-    CMD=(kill $PROC_PID)
-    echo "Killing $NODE_TO_KILL_RAW with PID $PROC_PID"
-    $CMD
-    print -s rnlist
-    print -s $CMD
+# Interface
+
+function rishow {
+  local INTERFACE=$(ros2 interface list | fzf)
+  [[ -z "$INTERFACE" ]] && return
+  local CMD="ros2 interface show $INTERFACE"
+  echo $CMD
+  $CMD
+  print -s rishow
+  print -s $CMD
 }
 
 # TF
@@ -199,12 +211,33 @@ function tf_echo {
 # Colcon
 
 function cb {
+    CMD=(colcon build --symlink-install)
+    echo $CMD
+    $CMD
+    print -s cb
+    print -s $CMD
+}
+
+function cbp {
     if [ $# -eq 0 ]; then
-        colcon build --symlink-install
+        PACKAGE=$(colcon list -n | fzf)
+        [[ -z "$PACKAGE" ]] && return
+        CMD="colcon build --symlink-install --packages-select $PACKAGE"
     else
-        colcon build --symlink-install --packages-select $@
+        CMD="colcon build --symlink-install --packages-select $@"
     fi
-    print -s cb $@
+    echo $CMD
+    eval $CMD
+    print -s cbp $@
+    print -s $CMD
+}
+
+function cl {
+    CMD=(colcon list -n)
+    echo $CMD
+    $CMD
+    print -s cl
+    print -s $CMD
 }
 
 # Rosdep
