@@ -26,7 +26,7 @@ Bash:
     ```
     echo 'source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws' >> ~/.bashrc
     ```
-3. (Optional) The 2nd argument sets colcon build command :
+    (Optional) The 2nd argument sets colcon build command :
     Edit `~/.bashrc` as follows.
     ```
     source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws "colcon build --symlink-install --parallel-workers $(nproc) --cmake-args -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=0"
@@ -63,6 +63,7 @@ Zsh: Help wanted
 | --- | --- |
 | `ros2 node list` | `rnlist` |
 | `ros2 node info` | `rninfo`|
+| Killing a node | `rnkill`|
 
 ## Services
 
