@@ -181,12 +181,11 @@ function chrdi {
 
 # ---colcon build---
 function colcon_build_command_set {
-  local current_dir=$PWD
-  cd $ROS_WORKSPACE > /dev/null
+  pushd $ROS_WORKSPACE > /dev/null
   cyan "$@"
   $@
   source ./install/setup.bash
-  cd $current_dir
+  popd
 }
 
 function cb {
@@ -223,13 +222,14 @@ function ctp {
     pkg_name=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
     [[ -z "$pkg_name" ]] && return
   fi
-  cd $ROS_WORKSPACE > /dev/null
+  pushd $ROS_WORKSPACE > /dev/null
   cbp $pkg_name
   local cmd="colcon test --parallel-workers $(nproc) --packages-select $pkg_name"
   cyan "$cmd" && $cmd
   cmd="colcon test-result --verbose"
   cyan "$cmd" && $cmd
   history -s "ctp $pkg_name"
+  popd
 }
 _pkg_name_complete() {
   local pkg_names=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done)
