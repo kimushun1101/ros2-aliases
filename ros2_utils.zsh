@@ -75,6 +75,16 @@ function rtinfo {
     print -s $CMD
 }
 
+function rtbw {
+    local TOPIC=$(ros2 topic list | fzf)
+    [[ -z "$TOPIC" ]] && return
+    CMD=(ros2 topic bw $TOPIC)
+    echo $CMD
+    $CMD
+    print -s rtbw
+    print -s $CMD
+}
+
 # Nodes
 
 function rnlist {
