@@ -301,12 +301,15 @@ alias rpkgexe="ros2 pkg executables"
 
 # ---ros2 launch---
 function rlaunch {
-  local pkg_name=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
+  local pkg_name=$(find /opt/ros/$ROS_DISTRO/share $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
   [[ -z "$pkg_name" ]] && return
-  local pkg_dir=$(find /opt/ros/$ROS_DISTRO/share $ROS_WORKSPACE/install -name $pkg_name | awk '{print length() ,$0}' | sort -n | awk '{ print  $2 }' | head -n 1)
+  local pkg_dir=$(find /opt/ros/$ROS_DISTRO/share $ROS_WORKSPACE/install -name $pkg_name | awk '{print length(), $0}' | sort -n | awk '{ print  $2 }' | head -n 1)
   [[ -z "$pkg_dir/launch" ]] && red "$pkg_name : No launch directory" && return
-  local launch_file=$(find $pkg_dir -type f -regex ".*launch.*\.\(py\|xml\|yaml\)" -exec basename {} \; | awk -F/ '{print $NF}' | fzf)
+  local launch_file=$(find $pkg_dir -regex ".*launch*\.\(py\|xml\|yaml\)" -exec basename {} \; | awk -F/ '{print $NF}' | fzf)
   [[ -z $launch_file ]] && return
-  ros2 launch $pkg_name $launch_file
-  history -s "ros2 launch $pkg_name $launch_file"
+  local cmd="ros2 launch $pkg_name $launch_file"
+  cyan "$cmd"
+  $cmd
+  history -s "rlaunch"
+  history -s "$cmd"
 }
