@@ -310,16 +310,3 @@ function rlaunch {
   ros2 launch $pkg_name $launch_file
   history -s "ros2 launch $pkg_name $launch_file"
 }
-
-# ---Pull request to ros2_utils---
-# https://github.com/tonynajjar/ros2-aliases/pull/9
-# ros2 interface
-function rishow {
-  local INTERFACE=$(ros2 interface list | fzf | sed 's/ //g')
-  [[ -z "$INTERFACE" ]] && return
-  local cmd="ros2 interface show $INTERFACE"
-  echo $cmd
-  $cmd
-  history -s rishow
-  history -s $cmd
-}
