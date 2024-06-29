@@ -96,10 +96,13 @@ Zsh: Help wanted
 
 | Command | Alias |
 | --- | --- |
-| `cd $ROS_WORKSPACE` && `colcon build --symlink-install` | `cb` |
-| `cd $ROS_WORKSPACE` && `colcon build --symlink-install --packages-select` | `cbp`|
-| `cd $ROS_WORKSPACE` && `colcon build --symlink-install --cmake-clean-cache ` | `cbcc`|
-| `cd $ROS_WORKSPACE` && `colcon build --symlink-install --cmake-clean-first ` | `cbcf`|
+| `colcon build --symlink-install` | `cb` |
+| `colcon build --symlink-install --packages-select` | `cbp`|
+| `colcon test --packages-select` and `colcon test-result --verbose` | `ctp`|
+| `colcon build --symlink-install --cmake-clean-cache ` | `cbcc`|
+| `colcon build --symlink-install --cmake-clean-first ` | `cbcf`|
+| `rm build install log` and `colcon build --symlink-install` | `cbrm`|
+| `rm build install log` for selected packages and `colcon build --symlink-install --packages-select` | `cbrm`|
 | `colcon list` | `cl` |
 
 ## Rosdep
