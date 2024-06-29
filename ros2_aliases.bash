@@ -207,6 +207,18 @@ function cbcf {
   colcon_build_command_set "$cmd"
 }
 
+function cbrm {
+  local cmd="$COLCON_BUILD_CMD"
+  cyan "rm -rf build install log && $cmd"
+  read -p "Do you want to execute? (y:Yes/n:No): " yn
+  case "$yn" in
+    [yY]*);;
+    *) return ;;
+  esac
+  rm -rf build install log
+  colcon_build_command_set "$cmd"
+}
+
 function cbp {
   local pkg_name="$@"
   if [ -z "$1" ]; then
@@ -216,6 +228,29 @@ function cbp {
   colcon_build_command_set "$COLCON_BUILD_CMD --packages-select $pkg_name"
   history -s "cbp $pkg_name"
 }
+
+function cbprm {
+  local pkg_names="$@"
+  if [ -z "$1" ]; then
+    pkg_names=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
+    [[ -z "$pkg_names" ]] && return
+  fi
+  local cmd="$COLCON_BUILD_CMD --packages-select $pkg_names"
+  cyan "rm -rf build/pkgs install/pkgs log/pkgs && $cmd"
+  cyan "pkgs : $pkg_names"
+  read -p "Do you want to execute? (y:Yes/n:No): " yn
+  case "$yn" in
+    [yY]*);;
+    *) return ;;
+  esac
+  for pkg_name in $pkg_names; do
+    rm -rf $wd/home/$pkg_name/build
+    rm -rf $wd/home/$pkg_name/install
+    rm -rf $wd/home/$pkg_name/log
+  done
+  colcon_build_command_set "$cmd"
+}
+
 function ctp {
   local pkg_name="$@"
   if [ -z "$1" ]; then
@@ -235,7 +270,7 @@ _pkg_name_complete() {
   local pkg_names=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done)
   COMPREPLY=( $(compgen -W "$pkg_names" -- "${COMP_WORDS[$COMP_CWORD]}") )
 }
-complete -F _pkg_name_complete cbp ctp
+complete -F _pkg_name_complete cbp cbprm ctp
 
 # ---roscd---
 function roscd {
