@@ -247,9 +247,9 @@ function cbprm {
     *) return ;;
   esac
   for pkg_name in $pkg_names; do
-    rm -rf $wd/home/$pkg_name/build
-    rm -rf $wd/home/$pkg_name/install
-    rm -rf $wd/home/$pkg_name/log
+    rm -rf $ROS_WORKSPACE/build/$pkg_name
+    rm -rf $ROS_WORKSPACE/install/$pkg_name
+    rm -rf $ROS_WORKSPACE/log/$pkg_name
   done
   colcon_build_command_set "$cmd"
 }
