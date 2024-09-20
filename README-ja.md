@@ -1,57 +1,55 @@
 [日本語](/README-ja.md) | [English](/README.md)
 
-# ros2-aliases
-Collection of functions and aliases for ROS2 development
+# ros2　aliases
+
+ROS 2 を開発するときに便利なエイリアスと関数
 
 ![](https://github.com/tonynajjar/ros2-aliases/blob/main/usage.gif)
 
-# Prerequisites
+# 準備
 
 - [fzf](https://github.com/junegunn/fzf#installation)
-  For Ubuntu simply: 
+  Ubuntu の場合は、apt でインストールできます。 
   ```
   sudo apt install fzf
   ```
   For more install options refer to the documentation
 
-- Bash or Zsh
+- Bash (Zsh はまだできていません)
 
-# Installation
-Bash:
-1. Clone the repo: `git clone https://github.com/kimushun1101/ros2-aliases.git PATH_TO_CLONE`  
-    For example:
+# インストール
+
+1. このリポジトリをクローンしてください。`git clone https://github.com/kimushun1101/ros2-aliases.git PATH_TO_CLONE`  
+    ホームディレクトリに隠しフォルダとして入れる場合には以下の通り
     ```
     git clone https://github.com/kimushun1101/ros2-aliases.git ~/.ros2-aliases
     ```
-2. Add ros2_aliases.bash to bashrc with your ROS_WORKSPACE: `echo 'source PATH_TO_CLONE/ros2_aliases.bash $ROS_WORKSPACE' >> ~/.bashrc`  
-    For example:
+2. bashrc にワークスペースのディレクトリを読み込むように追加してください。`echo 'source PATH_TO_CLONE/ros2_aliases.bash $ROS_WORKSPACE' >> ~/.bashrc`  
+    隠しフォルダにインストールした状態で、`~/ros2_ws` を指定する場合には以下のコマンドを実行
     ```
     echo 'source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws' >> ~/.bashrc
     ```
-    (Optional) The 2nd argument sets colcon build command :
-    Edit `~/.bashrc` as follows.
-    ```
-    source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws "colcon build --symlink-install --parallel-workers $(nproc) --cmake-args -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=0"
-    ```
 
-Zsh: Help wanted
+# 使い方
 
-# Usage
+- `rahelp` で `ros2_aliases` のヘルプを表示します。 **これだけ覚えていれば使えます**
+  `ros2 aliases help` を意味しています。
+- `raload` で `ros2_aliases`の設定をロードします。
+  `ros2 aliases load` を意味しています。
+- `roscd` で `$ROS_WORKSPACE/src` 以下にあるパッケージのディレクトリに移動します。  
+- `chcbc` でその引数をデフォルトのビルドコマンドに変更します。
+  `change colcon build command` を意味しています。
+- `chrdi` でその引数に ROS_DOMAIN_ID を変更します。`chrdi 0` とすると ROS_LOCALHOST_ONLY=1 が設定されます。
+  `chage ROS Domain ID` を意味しています。
 
-- `rahelp` shows `ros2_aliases help`. **(Important!) Just remember this.**
-- `raload` loads `ros2_aliases config`.  
-- `roscd` changes the working directory into the selected package directory under `$ROS_WORKSPACE/src`.  
-- `chcbc` changes colcon build command with its arguments.
-- `chrdi` changes ROS_DOMAIN_ID. If the argument is 0, ROS_LOCALHOST_ONLY=1 is set.
-
-## Executable
+## 実行
 
 | Command | Alias |
 | --- | --- |
 | `ros2 run` | `rrun` |
 | `ros2 launch` | `rlaunch` |
 
-## Topics
+## トピック
 
 | Command | Alias |
 | --- | --- |
@@ -59,7 +57,7 @@ Zsh: Help wanted
 | `ros2 topic echo` | `rtecho`|
 | `ros2 topic info` | `rtinfo`|
 
-## Nodes
+## ノード
 
 | Command | Alias |
 | --- | --- |
@@ -67,13 +65,13 @@ Zsh: Help wanted
 | `ros2 node info` | `rninfo`|
 | Killing a node | `rnkill`|
 
-## Services
+## サービス
 
 | Command | Alias |
 | --- | --- |
 | `ros2 service list` | `rslist` |
 
-## Parameters
+## パラメーター
 
 | Command | Alias |
 | --- | --- |
@@ -81,7 +79,7 @@ Zsh: Help wanted
 | `ros2 param get`  | `rpget`|
 | `ros2 param set`  | `rpset`|
 
-## Interface
+## インターフェース
 
 | Command | Alias |
 | --- | --- |
@@ -107,20 +105,21 @@ Zsh: Help wanted
 | `rm build install log` for selected packages and `colcon build --symlink-install --packages-select` | `cbrm`|
 | `colcon list` | `cl` |
 
-## Rosdep
+## rosdep
 
 | Command | Alias |
 | --- | --- |
 | `cd $ROS_WORKSPACE` && `rosdep install --from-paths src --ignore-src -y` | `rosdep_install` |
 
-# Uninstall
+# アンインストール
 
-Delete `source ~/.ros2-aliases/ros2_aliases.bash $ROS_WORKSPACE` in `~/.bashrc` then execute the following command.
+`~/.bashrc` から `source PATH_TO_CLONE/ros2_aliases.bash $ROS_WORKSPACE` の行を削除してください。
+その後クローンしたディレクトリを削除してください。
 ```
-rm -rf ~/.ros2-aliases
+rm -rf ~/.ros2-aliases # PATH_TO_CLONE
 ```
 
-# Reference
+# 参考
 
 - `ros2_utils.bash` : https://github.com/tonynajjar/ros2-aliases by Tony Najjar
 - `yaml.sh` : https://github.com/jasperes/bash-yaml by Jonathan Peres
