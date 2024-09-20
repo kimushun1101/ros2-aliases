@@ -1,6 +1,6 @@
 [日本語](/README-ja.md) | [English](/README.md)
 
-# ros2　aliases
+# ros2-aliases
 
 ROS 2 を開発するときに便利なエイリアスと関数
 
