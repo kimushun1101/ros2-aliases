@@ -58,6 +58,7 @@ Zsh: Help wanted
 | `ros2 topic list` | `rtlist` |
 | `ros2 topic echo` | `rtecho`|
 | `ros2 topic info` | `rtinfo`|
+| `ros2 topic bw` | `rtbw`|
 
 ## Nodes
 
