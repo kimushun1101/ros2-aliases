@@ -102,7 +102,7 @@ ROS 2 を開発するときに便利なエイリアスと関数
 | `colcon build --symlink-install --cmake-clean-cache ` | `cbcc`|
 | `colcon build --symlink-install --cmake-clean-first ` | `cbcf`|
 | `rm build install log` and `colcon build --symlink-install` | `cbrm`|
-| `rm build install log` for selected packages and `colcon build --symlink-install --packages-select` | `cbrm`|
+| `rm build install log` for selected packages and `colcon build --symlink-install --packages-select` | `cbprm`|
 | `colcon list` | `cl` |
 
 ## rosdep
