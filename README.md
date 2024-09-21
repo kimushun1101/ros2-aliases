@@ -46,7 +46,7 @@ Collection of functions and aliases for ROS2 development
 
 `rahelp` shows `ros2_aliases help`. **(Important!) Just remember this.**
 
-## Environment variable
+## Environment variables
 
 - `setenvfile` sets environment variables. This function can also take an env file as an argument.
 - `setrws` sets ROS 2 workspace.
