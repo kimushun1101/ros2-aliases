@@ -22,59 +22,66 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-export ROS2_ALIASES=$BASH_SOURCE
-export ROS_DISTRO=humble
-
 function red  { echo -e "\033[31m$1\033[m"; }
 function green { echo -e "\033[32m$1\033[m"; }
 function cyan { echo -e "\033[36m$1\033[m"; }
 
-if [ $# = 0 ]; then
-  red "[ros2 aliases] Give at least one path as an argument."
-  red "[Usage 1] source PATH_TO_CLONE/ros2_aliases.bash PATH_TO_ROS_WORKSPACE"
-  red "[Usage 2] source PATH_TO_CLONE/ros2_aliases.bash PATH_TO_ROS_WORKSPACE STRING_OF_COLCON_BUILD_CMD"
-  red "[Usage 3] source PATH_TO_CLONE/ros2_aliases.bash PATH_TO_CONFIG_FILE"
-  return
-fi
+export ROS2_ALIASES=$BASH_SOURCE
 
-# config file load function
-function load_ros2_aliases_config_yaml {
-  source "`dirname $ROS2_ALIASES`/yaml.sh"
-  local yaml_string="$(parse_yaml "$1")"
-  eval "$(echo "$yaml_string" | sed 's/ROS2_ALIASES_ENVIRONMENT_VARIABLES_\(.*\)=\(.*\)/export \1=\2/g')"
-  export ROS_WORKSPACE=$(eval echo "$ROS2_ALIASES_ROS_WORKSPACE")
-  export COLCON_BUILD_CMD=$(eval echo "$ROS2_ALIASES_COLCON_BUILD_CMD")
-  unset_variables "$yaml_string"
+# change env function
+function chenv {
+  local env_file=$1
+  if [ -z $1 ]; then
+    editor `dirname $ROS2_ALIASES`/.env
+    env_file=`dirname $ROS2_ALIASES`/.env
+  fi
+  if [ -f "$env_file" ]; then
+    while IFS='=' read -r key value; do
+      # Skip comment lines and blank lines
+      if [[ "$key" =~ ^#.* || -z "$key" ]]; then
+          continue
+      fi
+      # Ignore comments on the right end 
+      value=$(echo "$value" | sed 's/ #.*//')
+      # Evaluate and expand commands part $() 
+      value=$(echo "$value" | sed -E 's/\$\([^)]*\)/$(eval echo \0)/g')
+      # Expand environment variables part ${} 
+      value=$(eval echo "\"$value\"")
+      export $key="$value"
+    done < $env_file
+  else
+    red "[ros2 aliases] This file not found. : $env_file"
+    return 1
+  fi
 }
 
-# arguments handling
-case "$1" in
-  *.yaml | *.yml )
-    load_ros2_aliases_config_yaml "$1" > /dev/null
-    ;;
-  * ) 
-    export ROS_WORKSPACE=$1
-    if [ -n "$2" ]; then
-      export COLCON_BUILD_CMD="$2"
-    else
-      export COLCON_BUILD_CMD="colcon build --symlink-install --parallel-workers $(nproc)"
-    fi
-    ;;
-esac
+pushd `dirname $ROS2_ALIASES` > /dev/null
+cp -n .env_example .env
+chenv .env
+popd > /dev/null
 
-# error check
-if [ ! -d "$ROS_WORKSPACE/src" ]; then
-  red "[ros2 aliases] No src directory in the workspace : $ROS_WORKSPACE"
-  return
+# arguments handling
+if [ -f "$1" ]; then
+  chenv $1
+elif [ -d "$1" ]; then
+  export ROS_WORKSPACE=$1
 fi
-if [[ $COLCON_BUILD_CMD != "colcon build "* ]]; then
-  red "Invalid command for colcon build : $COLCON_BUILD_CMD"
-  return
-fi
+
+function _check_ROSWS_env() {
+  if [ -z "$ROS_WORKSPACE" ]; then
+    red "[ros2 aliases] ROS_WORKSPACE is empty. Use chws \$YOUR_ROS_WORKSPACE"
+    return 0
+  fi
+  return 1
+}
 
 # source other scripts
 source "`dirname $ROS2_ALIASES`/ros2_utils.bash"
-source /opt/ros/$ROS_DISTRO/setup.bash
+if [ -e "/opt/ros/$ROS_DISTRO/setup.bash" ]; then
+  source /opt/ros/$ROS_DISTRO/setup.bash
+else
+  red "[ros2 aliases] Invalid ROS 2 version : $ROS_DISTRO"
+fi
 if [ -e "$ROS_WORKSPACE/install/setup.bash" ]; then
   source $ROS_WORKSPACE/install/setup.bash
 fi
@@ -82,7 +89,7 @@ fi
 # ros2 aliases help
 function rahelp {
   green "--- change environments ---"
-  echo "`cyan raload` : search and load config for ros2-aliases"
+  echo "`cyan chenv` : edit default environment or load an argument env file"
   echo "`cyan chws\ PATH_TO_WORKSPACE` : change ROS 2 workspace"
   echo "`cyan chcbc\ COLCON_BUILD_COMMAND` : change colcon build command with its arguments"
   echo "`cyan chrdi\ ROS_DOMAIN_ID` : change ROS_DOMAIN_ID and ROS_LOCALHOST_ONLY"
@@ -120,27 +127,6 @@ function rahelp {
   echo "`cyan ROS_DOMAIN_ID` : "$ROS_DOMAIN_ID""
 }
 
-# ---change environments---
-function raload {
-  if [ -n "$1" ]; then
-    local config_file=$1
-  else
-    local config_file=`find ~ \( -path "$HOME/.config" -o -name "ros2_aliases.bash" \) -prune -o -type f -regex ".*\.\(sh\|bash\|yaml\|yml\)" -exec grep -l "ROS2_ALIASES" {} + | fzf`
-  fi
-  [[ -z "$config_file" ]] && return
-  if [[ "$config_file" =~ \.sh$|\.bash$ ]]; then
-    source $config_file
-  elif [[ "$config_file" =~ \.yaml$|\.yml$ ]]; then
-    load_ros2_aliases_config_yaml "$config_file" > /dev/null
-  else
-    red "*.sh, *.bash, *.yml, or *.yaml is required.*"
-    return
-  fi
-  cyan "Load $config_file"
-  history -s "raload"
-  history -s "raload $config_file"
-}
-
 # change ROS 2 workspace
 function chws {
   local workspace_candidate=$1
@@ -161,7 +147,7 @@ function chws {
 # change colcon build
 function chcbc {
   if [ $# != 1 ]; then
-    red "[Usage] chcbc COLCON_BUILD_CMD"
+    red "[ros2 aliases] an argument is required. Usage: chcbc COLCON_BUILD_CMD"
     echo "current COLCON_BUILD_CMD=\"`cyan "$COLCON_BUILD_CMD"`\""
     echo "default COLCON_BUILD_CMD=\"`cyan "colcon build --symlink-install --parallel-workers $(nproc)"`\""
     return
@@ -183,7 +169,7 @@ function chrdi {
 }
 
 # ---colcon build---
-function colcon_build_command_set {
+function colcon_build_command_exec {
   pushd $ROS_WORKSPACE > /dev/null
   cyan "$@"
   $@
@@ -192,14 +178,17 @@ function colcon_build_command_set {
 }
 
 function cb {
-  colcon_build_command_set "$COLCON_BUILD_CMD"
+  _check_ROSWS_env && return
+  colcon_build_command_exec "$COLCON_BUILD_CMD"
 }
 
 function cbcc {
-  colcon_build_command_set "$COLCON_BUILD_CMD --cmake-clean-cache"
+  _check_ROSWS_env && return
+  colcon_build_command_exec "$COLCON_BUILD_CMD --cmake-clean-cache"
 }
 
 function cbcf {
+  _check_ROSWS_env && return
   local cmd="$COLCON_BUILD_CMD --cmake-clean-first"
   cyan "$cmd"
   read -p "Do you want to execute? (y:Yes/n:No): " yn
@@ -207,10 +196,11 @@ function cbcf {
     [yY]*);;
     *) return ;;
   esac
-  colcon_build_command_set "$cmd"
+  colcon_build_command_exec "$cmd"
 }
 
 function cbrm {
+  _check_ROSWS_env && return
   local cmd="$COLCON_BUILD_CMD"
   cyan "rm -rf build install log && $cmd"
   read -p "Do you want to execute? (y:Yes/n:No): " yn
@@ -219,20 +209,22 @@ function cbrm {
     *) return ;;
   esac
   rm -rf build install log
-  colcon_build_command_set "$cmd"
+  colcon_build_command_exec "$cmd"
 }
 
 function cbp {
+  _check_ROSWS_env && return
   local pkg_name="$@"
   if [ -z "$1" ]; then
     pkg_name=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
     [[ -z "$pkg_name" ]] && return
   fi
-  colcon_build_command_set "$COLCON_BUILD_CMD --packages-select $pkg_name"
+  colcon_build_command_exec "$COLCON_BUILD_CMD --packages-select $pkg_name"
   history -s "cbp $pkg_name"
 }
 
 function cbprm {
+  _check_ROSWS_env && return
   local pkg_names="$@"
   if [ -z "$1" ]; then
     pkg_names=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
@@ -251,10 +243,11 @@ function cbprm {
     rm -rf $ROS_WORKSPACE/install/$pkg_name
     rm -rf $ROS_WORKSPACE/log/$pkg_name
   done
-  colcon_build_command_set "$cmd"
+  colcon_build_command_exec "$cmd"
 }
 
 function ctp {
+  _check_ROSWS_env && return
   local pkg_name="$@"
   if [ -z "$1" ]; then
     pkg_name=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
@@ -277,6 +270,7 @@ complete -F _pkg_name_complete cbp cbprm ctp
 
 # ---roscd---
 function roscd {
+  _check_ROSWS_env && return
   local pkg_dir_name=$1
   if [ -z "$1" ]; then
     pkg_dir_name=$(find $ROS_WORKSPACE/src -name "package.xml" -printf "%h\n" | awk -F/ '{print $NF}' | fzf)
@@ -284,7 +278,7 @@ function roscd {
     history -s "roscd $pkg_dir_name"
   fi
   local pkg_dir=$(find $ROS_WORKSPACE/src -name $pkg_dir_name | awk '{print length() ,$0}' | sort -n | awk '{ print  $2 }' | head -n 1)
-  [[ -z $pkg_dir ]] && red "$pkg_dir_name : No such package" && return
+  [[ -z $pkg_dir ]] && red "[ros2 aliases] No such package : $pkg_dir_name" && return
   cd $pkg_dir
 }
 _pkg_directory_complete() {
@@ -294,17 +288,21 @@ _pkg_directory_complete() {
 complete -o nospace -F _pkg_directory_complete roscd
 
 # ---rosdep---
-alias rosdep_install="cd $ROS_WORKSPACE && rosdep install --from-paths src --ignore-src -y"
+function rosdep_install {
+  _check_ROSWS_env && return
+  cd $ROS_WORKSPACE && rosdep install --from-paths src --ignore-src -y
+}
 
 # ---pkg---
 alias rpkgexe="ros2 pkg executables"
 
 # ---ros2 launch---
 function rlaunch {
+  _check_ROSWS_env && return
   local pkg_name=$(find /opt/ros/$ROS_DISTRO/share $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
   [[ -z "$pkg_name" ]] && return
   local pkg_dir=$(find /opt/ros/$ROS_DISTRO/share $ROS_WORKSPACE/install -name $pkg_name | awk '{print length(), $0}' | sort -n | awk '{ print  $2 }' | head -n 1)
-  [[ -z "$pkg_dir/launch" ]] && red "$pkg_name : No launch directory" && return
+  [[ -z "$pkg_dir/launch" ]] && red "[ros2 aliases] No launch directory : $pkg_name" && return
   local launch_file=$(find $pkg_dir -regex ".*launch*\.\(py\|xml\|yaml\)" -exec basename {} \; | awk -F/ '{print $NF}' | fzf)
   [[ -z $launch_file ]] && return
   local cmd="ros2 launch $pkg_name $launch_file"

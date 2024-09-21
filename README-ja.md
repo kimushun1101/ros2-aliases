@@ -34,8 +34,9 @@ ROS 2 を開発するときに便利なエイリアスと関数
 
 - `rahelp` で `ros2_aliases` のヘルプを表示します。 **これだけ覚えていれば使えます**
   `ros2 aliases help` を意味しています。
-- `raload` で `ros2_aliases`の設定をロードします。
-  `ros2 aliases load` を意味しています。
+- `chenv` でデフォルトの環境変数を変更します。
+  `change environment` を意味しています。
+  環境変数ファイルを引数として渡すことで、環境変数を上書きすることもできます。
 - `roscd` で `$ROS_WORKSPACE/src` 以下にあるパッケージのディレクトリに移動します。  
 - `chcbc` でその引数をデフォルトのビルドコマンドに変更します。
   `change colcon build command` を意味しています。
