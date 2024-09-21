@@ -7,7 +7,7 @@ Collection of functions and aliases for ROS2 development
 
 # Prerequisites
 
-- [fzf](https://github.com/junegunn/fzf#installation)
+- [fzf](https://github.com/junegunn/fzf#installation)  
   For Ubuntu simply: 
   ```
   sudo apt install fzf
@@ -16,7 +16,7 @@ Collection of functions and aliases for ROS2 development
 
 - Bash
 
-- editor
+- editor  
     (Optional) Configuration of `editor` is recommended.
     ```
     sudo update-alternatives --config editor
@@ -35,6 +35,11 @@ Collection of functions and aliases for ROS2 development
     ```
     source ~/.bashrc
     setenvfile
+    ```
+    `#` means comment out. 
+    Recommended is to set `ROS_WORKSPACE` to the path of the workspace you use most often.
+    ```
+    ROS_WORKSPACE=${HOME}/ros2_ws
     ```
 
 # Usage

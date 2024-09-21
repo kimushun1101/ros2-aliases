@@ -8,13 +8,13 @@ ROS 2 を開発するときに便利なエイリアスと関数
 
 # 準備
 
-- Bash 
-- [fzf](https://github.com/junegunn/fzf#installation)
+- Bash
+- [fzf](https://github.com/junegunn/fzf#installation)  
     Ubuntu の場合は、apt でインストールできます。 
     ```
     sudo apt install fzf
     ```
-- editor
+- editor  
     (任意) `editor` コマンドで開くエディターを指定しておくことをオススメします。
     ```
     sudo update-alternatives --config editor
@@ -27,8 +27,7 @@ ROS 2 を開発するときに便利なエイリアスと関数
     ```
     git clone https://github.com/kimushun1101/ros2-aliases.git $HOME/.local/ros2-aliases
     ```
-2. bashrc にワークスペースのディレクトリを読み込むように追加してください。  
-    隠しフォルダにインストールした状態で、`~/ros2_ws` を指定する場合には以下のコマンドを実行
+2. bashrc に `ros2_aliases.bash` を読み込むように追加してください。  
     ```
     echo 'source $HOME/.local/ros2-aliases/ros2_aliases.bash' >> ~/.bashrc
     ```
@@ -39,7 +38,7 @@ ROS 2 を開発するときに便利なエイリアスと関数
     ```
     `editor` で設定ファイルが開かれますので編集して保存してください。
     `#` はコメントアウトです。
-    オススメとしては、`ROS_WORKSPACE` をご自身がよく使うワークスペースのパスに設定することを推奨します。
+    `ROS_WORKSPACE` をご自身がよく使うワークスペースのパスに設定することを推奨します。
     ```
     ROS_WORKSPACE=${HOME}/ros2_ws
     ```
@@ -61,22 +60,23 @@ ROS 2 を開発するときに便利なエイリアスと関数
     setenvfile ~/ros2_ws/.env
     ```
 - `setrws` で ROS 2 workspace を設定します。
+    `set ROS WORKSPACE` を意味しています。
 - `setrdi` で ROS_DOMAIN_ID をその引数の値に設定します。
     `set ROS Domain ID` を意味しています。
     ```
     setrdi 40
     ```
     `setrdi 0` とすると ROS_LOCALHOST_ONLY=1 も設定されます。
-  - `setcbc` でビルドコマンドをその引数の文字列に設定します。
+- `setcbc` でビルドコマンドをその引数の文字列に設定します。
     `set colcon build command` を意味しています。
     ```
-    setcdc 40
+    setcbc "colcon build --symlink-install --parallel-workers $(nproc)"
     ```
 
 ## roscd
 
 `roscd` で `$ROS_WORKSPACE/src` 以下にあるパッケージのディレクトリに移動します。  
-引数なしだと fzf による検索に入り、引数としてパッケージ名を渡せばそのパッケージのディレクトリに移る。Tab 補完も有効。
+引数なしだと `fzf` による検索に入り、引数としてパッケージ名を渡せばそのパッケージのディレクトリに移ります。Tab 補完も有効です。
 ```
 roscd pkg_name
 ```
@@ -160,6 +160,6 @@ sed -i '\|source $HOME/.local/ros2-aliases/ros2_aliases.bash|d' ~/.bashrc
 rm -rf $HOME/.local/ros2-aliases 
 ```
 
-# 参考
+# 引用
 
 - `ros2_utils.bash` : https://github.com/tonynajjar/ros2-aliases by Tony Najjar
