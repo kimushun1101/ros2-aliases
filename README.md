@@ -44,12 +44,18 @@ Collection of functions and aliases for ROS2 development
 
 # Usage
 
-- `rahelp` shows `ros2_aliases help`. **(Important!) Just remember this.**
+`rahelp` shows `ros2_aliases help`. **(Important!) Just remember this.**
+
+## Environment variable
+
 - `setenvfile` sets environment variables. This function can also take an env file as an argument.
 - `setrws` sets ROS 2 workspace.
 - `setcbc` sets colcon build command with its arguments.
 - `setrdi` sets ROS_DOMAIN_ID. If the argument is 0, ROS_LOCALHOST_ONLY=1 is set.
-- `roscd` sets the working directory into the selected package directory under `$ROS_WORKSPACE/src`.
+
+## Roscd
+
+`roscd` sets the working directory into the selected package directory under `$ROS_WORKSPACE/src`.
 
 ## Executable
 
