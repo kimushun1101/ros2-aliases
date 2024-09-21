@@ -2,7 +2,7 @@
 
 # ros2-aliases
 
-ROS 2 を開発するときに便利なエイリアスと関数
+ROS 2 を開発するときに便利なエイリアス(関数)を提供します。
 
 ![](https://github.com/tonynajjar/ros2-aliases/blob/main/usage.gif)
 
