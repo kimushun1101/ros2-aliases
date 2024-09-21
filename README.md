@@ -14,7 +14,7 @@ Collection of functions and aliases for ROS2 development
   ```
   For more install options refer to the documentation
 
-- Bash or Zsh
+- Bash
 
 - editor
     (Optional) Configuration of `editor` is recommended.
@@ -23,7 +23,6 @@ Collection of functions and aliases for ROS2 development
     ```
 
 # Installation
-Bash:
 1. Clone this repository:
     ```
     git clone https://github.com/kimushun1101/ros2-aliases.git $HOME/.local/ros2-aliases
