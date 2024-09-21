@@ -44,7 +44,8 @@ Collection of functions and aliases for ROS2 development
 
 # Usage
 
-`rahelp` shows `ros2_aliases help`. **(Important!) Just remember this.**
+`rahelp` shows `ros2_aliases help`. **(Important!) Just remember this.**  
+The current key environment variables can also be viewed.
 
 ## Environment variables
 
