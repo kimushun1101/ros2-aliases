@@ -16,17 +16,26 @@ Collection of functions and aliases for ROS2 development
 
 - Bash or Zsh
 
+- editor
+    (Optional) Configuration of `editor` is recommended.
+    ```
+    sudo update-alternatives --config editor
+    ```
+
 # Installation
 Bash:
-1. Clone the repo: `git clone https://github.com/kimushun1101/ros2-aliases.git PATH_TO_CLONE`  
-    For example:
+1. Clone this repository:
     ```
-    git clone https://github.com/kimushun1101/ros2-aliases.git ~/.ros2-aliases
+    git clone https://github.com/kimushun1101/ros2-aliases.git $HOME/.local/ros2-aliases
     ```
-2. Add ros2_aliases.bash to bashrc with your ROS_WORKSPACE: `echo 'source PATH_TO_CLONE/ros2_aliases.bash $ROS_WORKSPACE' >> ~/.bashrc`  
-    For example:
+2. Add ros2_aliases.bash to bashrc:
     ```
-    echo 'source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws' >> ~/.bashrc
+    echo 'source $HOME/.local/ros2-aliases/ros2_aliases.bash' >> ~/.bashrc
+    ```
+3. Apply the bashrc update and edit .env for initial settings:
+    ```
+    source ~/.bashrc
+    setenvfile
     ```
 
 # Usage
@@ -110,9 +119,10 @@ Bash:
 
 # Uninstall
 
-Delete `source ~/.ros2-aliases/ros2_aliases.bash $ROS_WORKSPACE` in `~/.bashrc` then execute the following command.
+Delete `source $HOME/.local/ros2-aliases/ros2_aliases.bash` in `~/.bashrc` then remove this directory.
 ```
-rm -rf ~/.ros2-aliases
+sed -i '\|source $HOME/.local/ros2-aliases/ros2_aliases.bash|d' ~/.bashrc
+rm -rf $HOME/.local/ros2-aliases 
 ```
 
 # Reference
