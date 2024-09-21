@@ -8,40 +8,78 @@ ROS 2 を開発するときに便利なエイリアスと関数
 
 # 準備
 
+- Bash 
 - [fzf](https://github.com/junegunn/fzf#installation)
-  Ubuntu の場合は、apt でインストールできます。 
-  ```
-  sudo apt install fzf
-  ```
-  For more install options refer to the documentation
-
-- Bash (Zsh はまだできていません)
+    Ubuntu の場合は、apt でインストールできます。 
+    ```
+    sudo apt install fzf
+    ```
+- editor
+    (任意) `editor` コマンドで開くエディターを指定しておくことをオススメします。
+    ```
+    sudo update-alternatives --config editor
+    ```
 
 # インストール
 
-1. このリポジトリをクローンしてください。`git clone https://github.com/kimushun1101/ros2-aliases.git PATH_TO_CLONE`  
-    ホームディレクトリに隠しフォルダとして入れる場合には以下の通り
+1. このリポジトリをクローンしてください。  
+    以降、例として `$HOME/.local` にクローンする場合を記載します。
     ```
-    git clone https://github.com/kimushun1101/ros2-aliases.git ~/.ros2-aliases
+    git clone https://github.com/kimushun1101/ros2-aliases.git $HOME/.local/ros2-aliases
     ```
-2. bashrc にワークスペースのディレクトリを読み込むように追加してください。`echo 'source PATH_TO_CLONE/ros2_aliases.bash $ROS_WORKSPACE' >> ~/.bashrc`  
+2. bashrc にワークスペースのディレクトリを読み込むように追加してください。  
     隠しフォルダにインストールした状態で、`~/ros2_ws` を指定する場合には以下のコマンドを実行
     ```
-    echo 'source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws' >> ~/.bashrc
+    echo 'source $HOME/.local/ros2-aliases/ros2_aliases.bash' >> ~/.bashrc
+    ```
+3. .bashrc の変更を反映させた後、環境変数ファイルを設定する。
+    ```
+    source ~/.bashrc
+    setenv
+    ```
+    `editor` で設定ファイルが開かれますので編集して保存してください。
+    `#` はコメントアウトです。
+    オススメとしては、`ROS_WORKSPACE` をご自身がよく使うワークスペースのパスに設定することを推奨します。
+    ```
+    ROS_WORKSPACE=${HOME}/ros2_ws
     ```
 
 # 使い方
 
-- `rahelp` で `ros2_aliases` のヘルプを表示します。 **これだけ覚えていれば使えます**
-  `ros2 aliases help` を意味しています。
-- `chenv` でデフォルトの環境変数を変更します。
-  `change environment` を意味しています。
-  環境変数ファイルを引数として渡すことで、環境変数を上書きすることもできます。
-- `roscd` で `$ROS_WORKSPACE/src` 以下にあるパッケージのディレクトリに移動します。  
-- `chcbc` でその引数をデフォルトのビルドコマンドに変更します。
-  `change colcon build command` を意味しています。
-- `chrdi` でその引数に ROS_DOMAIN_ID を変更します。`chrdi 0` とすると ROS_LOCALHOST_ONLY=1 が設定されます。
-  `chage ROS Domain ID` を意味しています。
+`rahelp` で `ros2_aliases` のヘルプを表示します。 **これだけ覚えていれば使えます**
+`ros2 aliases help` を意味しています。
+末尾には主要な環境変数の現在の値も表示します。確認に使用してください。
+
+## 環境変数
+
+- `setenv` でデフォルトの環境変数を設定します。
+    `set environment` を意味しています。
+    引数なしで実行した場合には、[インストールの3](#インストール)で説明した動作をします。
+    環境変数ファイルを引数として渡すことで、たとえばワークスペース独自の環境変数を設定することもできます。
+    ```
+    # ~/ros2_ws に .env ファイルを作成しておく
+    setenv ~/ros2_ws/.env
+    ```
+- `setrws` で ROS 2 workspace を設定します。
+- `setrdi` で ROS_DOMAIN_ID をその引数の値に設定します。
+    `set ROS Domain ID` を意味しています。
+    ```
+    setrdi 40
+    ```
+    `setrdi 0` とすると ROS_LOCALHOST_ONLY=1 も設定されます。
+  - `setcbc` でビルドコマンドをその引数の文字列に設定します。
+    `set colcon build command` を意味しています。
+    ```
+    setcdc 40
+    ```
+
+## roscd
+
+`roscd` で `$ROS_WORKSPACE/src` 以下にあるパッケージのディレクトリに移動します。  
+引数なしだと fzf による検索に入り、引数としてパッケージ名を渡せばそのパッケージのディレクトリに移る。Tab 補完も有効。
+```
+roscd pkg_name
+```
 
 ## 実行
 
@@ -57,6 +95,7 @@ ROS 2 を開発するときに便利なエイリアスと関数
 | `ros2 topic list` | `rtlist` |
 | `ros2 topic echo` | `rtecho`|
 | `ros2 topic info` | `rtinfo`|
+| `ros2 topic bw` | `rtbw`|
 
 ## ノード
 
@@ -114,13 +153,13 @@ ROS 2 を開発するときに便利なエイリアスと関数
 
 # アンインストール
 
-`~/.bashrc` から `source PATH_TO_CLONE/ros2_aliases.bash $ROS_WORKSPACE` の行を削除してください。
+`~/.bashrc` から `source $HOME/.local/ros2-aliases/ros2_aliases.bash` の行を削除してください。
 その後クローンしたディレクトリを削除してください。
 ```
-rm -rf ~/.ros2-aliases # PATH_TO_CLONE
+sed -i '\|source $HOME/.local/ros2-aliases/ros2_aliases.bash|d' ~/.bashrc
+rm -rf $HOME/.local/ros2-aliases 
 ```
 
 # 参考
 
 - `ros2_utils.bash` : https://github.com/tonynajjar/ros2-aliases by Tony Najjar
-- `yaml.sh` : https://github.com/jasperes/bash-yaml by Jonathan Peres

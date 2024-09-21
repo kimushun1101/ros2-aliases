@@ -28,21 +28,15 @@ Bash:
     ```
     echo 'source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws' >> ~/.bashrc
     ```
-    (Optional) The 2nd argument sets colcon build command :
-    Edit `~/.bashrc` as follows.
-    ```
-    source ~/.ros2-aliases/ros2_aliases.bash ~/ros2_ws "colcon build --symlink-install --parallel-workers $(nproc) --cmake-args -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=0"
-    ```
-
-Zsh: Help wanted
 
 # Usage
 
 - `rahelp` shows `ros2_aliases help`. **(Important!) Just remember this.**
-- `chenv` changes environment variable. This function can also take an env file as an argument.
-- `roscd` changes the working directory into the selected package directory under `$ROS_WORKSPACE/src`.
-- `chcbc` changes colcon build command with its arguments.
-- `chrdi` changes ROS_DOMAIN_ID. If the argument is 0, ROS_LOCALHOST_ONLY=1 is set.
+- `setenv` sets environment variables. This function can also take an env file as an argument.
+- `setrws` sets ROS 2 workspace.
+- `setcbc` sets colcon build command with its arguments.
+- `setrdi` sets ROS_DOMAIN_ID. If the argument is 0, ROS_LOCALHOST_ONLY=1 is set.
+- `roscd` sets the working directory into the selected package directory under `$ROS_WORKSPACE/src`.
 
 ## Executable
 

@@ -22,20 +22,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-function red  { echo -e "\033[31m$1\033[m"; }
+function red   { echo -e "\033[31m$1\033[m"; }
 function green { echo -e "\033[32m$1\033[m"; }
-function cyan { echo -e "\033[36m$1\033[m"; }
+function cyan  { echo -e "\033[36m$1\033[m"; }
 
-export ROS2_ALIASES=$BASH_SOURCE
+ROS2_ALIASES=$BASH_SOURCE
+ROS2_ALIASES_DIR=`dirname $ROS2_ALIASES`
 
-# change env function
-function chenv {
-  local env_file=$1
+# set env function
+function setenv {
   if [ -z $1 ]; then
-    editor `dirname $ROS2_ALIASES`/.env
-    env_file=`dirname $ROS2_ALIASES`/.env
+    editor $ROS2_ALIASES_DIR/.env
+    ROS2_ALIASES_ENV=$ROS2_ALIASES_DIR/.env
+  else
+    ROS2_ALIASES_ENV=$1
   fi
-  if [ -f "$env_file" ]; then
+  if [ -f "$ROS2_ALIASES_ENV" ]; then
     while IFS='=' read -r key value; do
       # Skip comment lines and blank lines
       if [[ "$key" =~ ^#.* || -z "$key" ]]; then
@@ -48,35 +50,18 @@ function chenv {
       # Expand environment variables part ${} 
       value=$(eval echo "\"$value\"")
       export $key="$value"
-    done < $env_file
+    done < $ROS2_ALIASES_ENV
   else
-    red "[ros2 aliases] This file not found. : $env_file"
+    red "[ros2 aliases] This file not found. : $ROS2_ALIASES_ENV"
     return 1
   fi
 }
 
-pushd `dirname $ROS2_ALIASES` > /dev/null
-cp -n .env_example .env
-chenv .env
-popd > /dev/null
-
-# arguments handling
-if [ -f "$1" ]; then
-  chenv $1
-elif [ -d "$1" ]; then
-  export ROS_WORKSPACE=$1
-fi
-
-function _check_ROSWS_env() {
-  if [ -z "$ROS_WORKSPACE" ]; then
-    red "[ros2 aliases] ROS_WORKSPACE is empty. Use chws \$YOUR_ROS_WORKSPACE"
-    return 0
-  fi
-  return 1
-}
+cp -n $ROS2_ALIASES_DIR/.env_example $ROS2_ALIASES_DIR/.env
+setenv $ROS2_ALIASES_DIR/.env
 
 # source other scripts
-source "`dirname $ROS2_ALIASES`/ros2_utils.bash"
+source "$ROS2_ALIASES_DIR/ros2_utils.bash"
 if [ -e "/opt/ros/$ROS_DISTRO/setup.bash" ]; then
   source /opt/ros/$ROS_DISTRO/setup.bash
 else
@@ -88,11 +73,11 @@ fi
 
 # ros2 aliases help
 function rahelp {
-  green "--- change environments ---"
-  echo "`cyan chenv` : edit default environment or load an argument env file"
-  echo "`cyan chws\ PATH_TO_WORKSPACE` : change ROS 2 workspace"
-  echo "`cyan chcbc\ COLCON_BUILD_COMMAND` : change colcon build command with its arguments"
-  echo "`cyan chrdi\ ROS_DOMAIN_ID` : change ROS_DOMAIN_ID and ROS_LOCALHOST_ONLY"
+  green "--- set environments ---"
+  echo "`cyan setenv` : edit default env or load an argument env file"
+  echo "`cyan setrws\ PATH_TO_WORKSPACE` : set ROS 2 workspace"
+  echo "`cyan setrdi\ ROS_DOMAIN_ID` : set ROS_DOMAIN_ID and ROS_LOCALHOST_ONLY"
+  echo "`cyan setcbc\ COLCON_BUILD_COMMAND` : set colcon build command with its arguments"
   green "--- colcon build ---"
   echo "`cyan cb`     : colcon build"
   echo "`cyan cbcc`   : colcon build with clean cache"
@@ -123,12 +108,12 @@ function rahelp {
   echo "`cyan "ros2 -h"` : The Official help"
   green "--- current settings ---"
   echo "`cyan ROS_WORKSPACE` : "$ROS_WORKSPACE""
-  echo "`cyan COLCON_BUILD_CMD` : "$COLCON_BUILD_CMD""
   echo "`cyan ROS_DOMAIN_ID` : "$ROS_DOMAIN_ID""
+  echo "`cyan COLCON_BUILD_CMD` : "$COLCON_BUILD_CMD""
 }
 
-# change ROS 2 workspace
-function chws {
+# set ROS 2 workspace
+function setrws {
   local workspace_candidate=$1
   if [ -z "$1" ]; then
     workspace_candidate=$(find $HOME -type d -name "*_ws" | fzf)
@@ -141,13 +126,13 @@ function chws {
   cd $workspace_candidate
   ROS_WORKSPACE=$(pwd)
   echo "`cyan ROS_WORKSPACE` : "$ROS_WORKSPACE""
-  history -s "chws $ROS_WORKSPACE"
+  history -s "setrws $ROS_WORKSPACE"
 }
 
-# change colcon build
-function chcbc {
+# set colcon build
+function setcbc {
   if [ $# != 1 ]; then
-    red "[ros2 aliases] an argument is required. Usage: chcbc COLCON_BUILD_CMD"
+    red "[ros2 aliases] an argument is required. Usage: setcbc COLCON_BUILD_CMD"
     echo "current COLCON_BUILD_CMD=\"`cyan "$COLCON_BUILD_CMD"`\""
     echo "default COLCON_BUILD_CMD=\"`cyan "colcon build --symlink-install --parallel-workers $(nproc)"`\""
     return
@@ -155,8 +140,8 @@ function chcbc {
   source $ROS2_ALIASES "$ROS_WORKSPACE" "$1"
 }
 
-# change ROS_DOMAIN_ID
-function chrdi {
+# set ROS_DOMAIN_ID
+function setrdi {
   if [ $# != 1 ] || [ $1 -eq 0 ]; then
     export ROS_LOCALHOST_ONLY=1
     echo "ROS_DOMAIN_ID=$1"
@@ -169,6 +154,14 @@ function chrdi {
 }
 
 # ---colcon build---
+function _check_ROSWS_env() {
+  if [ ! -d "$ROS_WORKSPACE/src" ]; then
+    red "[ros2 aliases] No src directory in the workspace : $workspace_candidate"
+    return 0
+  fi
+  return 1
+}
+
 function colcon_build_command_exec {
   pushd $ROS_WORKSPACE > /dev/null
   cyan "$@"
