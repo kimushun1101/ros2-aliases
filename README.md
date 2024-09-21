@@ -32,7 +32,7 @@ Bash:
 # Usage
 
 - `rahelp` shows `ros2_aliases help`. **(Important!) Just remember this.**
-- `setenv` sets environment variables. This function can also take an env file as an argument.
+- `setenvfile` sets environment variables. This function can also take an env file as an argument.
 - `setrws` sets ROS 2 workspace.
 - `setcbc` sets colcon build command with its arguments.
 - `setrdi` sets ROS_DOMAIN_ID. If the argument is 0, ROS_LOCALHOST_ONLY=1 is set.
@@ -118,4 +118,3 @@ rm -rf ~/.ros2-aliases
 # Reference
 
 - `ros2_utils.bash` : https://github.com/tonynajjar/ros2-aliases by Tony Najjar
-- `yaml.sh` : https://github.com/jasperes/bash-yaml by Jonathan Peres

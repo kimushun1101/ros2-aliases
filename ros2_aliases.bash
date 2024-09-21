@@ -30,7 +30,7 @@ ROS2_ALIASES=$BASH_SOURCE
 ROS2_ALIASES_DIR=`dirname $ROS2_ALIASES`
 
 # set env function
-function setenv {
+function setenvfile {
   if [ -z $1 ]; then
     editor $ROS2_ALIASES_DIR/.env
     ROS2_ALIASES_ENV=$ROS2_ALIASES_DIR/.env
@@ -58,7 +58,7 @@ function setenv {
 }
 
 cp -n $ROS2_ALIASES_DIR/.env_example $ROS2_ALIASES_DIR/.env
-setenv $ROS2_ALIASES_DIR/.env
+setenvfile $ROS2_ALIASES_DIR/.env
 
 # source other scripts
 source "$ROS2_ALIASES_DIR/ros2_utils.bash"
@@ -74,7 +74,7 @@ fi
 # ros2 aliases help
 function rahelp {
   green "--- set environments ---"
-  echo "`cyan setenv` : edit default env or load an argument env file"
+  echo "`cyan setenvfile` : edit default env or load an argument env file"
   echo "`cyan setrws\ PATH_TO_WORKSPACE` : set ROS 2 workspace"
   echo "`cyan setrdi\ ROS_DOMAIN_ID` : set ROS_DOMAIN_ID and ROS_LOCALHOST_ONLY"
   echo "`cyan setcbc\ COLCON_BUILD_COMMAND` : set colcon build command with its arguments"
