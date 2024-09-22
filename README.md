@@ -50,9 +50,15 @@ The current key environment variables can also be viewed.
 ## Environment variables
 
 - `setenvfile` sets environment variables. This function can also take an env file as an argument.
+    | Environment variable | Description |
+    | --- | --- |
+    | `ROS_DISTRO` | humble, Iron, Jazzy, etc. |
+    | `ROS_WORKSPACE` | full path to your ROS 2 workspace |
+    | `ROS_DOMAIN_ID` | refer to [the official documentation](https://docs.ros.org/en/humble/Concepts/About-Domain-ID.html) |
+    | `COLCON_BUILD_CMD` | build command with options |
 - `setrws` sets ROS 2 workspace.
-- `setcbc` sets colcon build command with its arguments.
 - `setrdi` sets ROS_DOMAIN_ID. If the argument is 0, ROS_LOCALHOST_ONLY=1 is set.
+- `setcbc` sets colcon build command with its arguments.
 
 ## Roscd
 

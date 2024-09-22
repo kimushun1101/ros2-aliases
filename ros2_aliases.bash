@@ -167,7 +167,7 @@ function colcon_build_command_exec {
   cyan "$@"
   $@
   source ./install/setup.bash
-  popd
+  popd > /dev/null
 }
 
 function cb {
@@ -253,7 +253,7 @@ function ctp {
   cmd="colcon test-result --verbose"
   cyan "$cmd" && $cmd
   history -s "ctp $pkg_name"
-  popd
+  popd > /dev/null
 }
 _pkg_name_complete() {
   local pkg_names=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done)
@@ -283,7 +283,11 @@ complete -o nospace -F _pkg_directory_complete roscd
 # ---rosdep---
 function rosdep_install {
   _check_ROSWS_env && return
-  cd $ROS_WORKSPACE && rosdep install --from-paths src --ignore-src -y
+  pushd $ROS_WORKSPACE > /dev/null
+  cyan "rosdep install --from-paths src --ignore-src -y"
+  rosdep install --from-paths src --ignore-src -y
+  source /opt/ros/$ROS_DISTRO/setup.bash
+  popd > /dev/null
 }
 
 # ---pkg---
