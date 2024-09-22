@@ -19,7 +19,7 @@ ROS 2 を開発するときに便利なエイリアス(関数)を提供します
     ```
     sudo update-alternatives --config editor
     ```
-    VS Code なども選べますが `vim` や `nano` など CLI エディターを設定することをオススメします。
+    このスクリプトによる自動化の都合上、他に支障がなければ `VS Code` などの GUI エディターではなく、`vim` や `nano` など CLI エディターを設定してください。
 
 # インストール
 
@@ -37,9 +37,9 @@ ROS 2 を開発するときに便利なエイリアス(関数)を提供します
     source ~/.bashrc
     setenvfile
     ```
-    `editor` で [.env_example](/.env_example) をコピーした設定ファイル `.env` が開かれますので編集、保存して、閉じてください。
+    `editor` で [.env_example](/.env_example) をコピーした設定ファイル .env が開かれますので編集、保存して、閉じてください。
     `#` はコメントアウトです。
-    `ROS_WORKSPACE` をご自身がよく使うワークスペースのパスに設定することを推奨します。
+    `ROS_WORKSPACE` をご自身が現在開発中のワークスペースのパスに設定することを推奨します。
     ```
     ROS_WORKSPACE=${HOME}/ros2_ws
     ```
@@ -47,7 +47,7 @@ ROS 2 を開発するときに便利なエイリアス(関数)を提供します
 # 使い方
 
 `rahelp` で `ros2_aliases` のヘルプを表示します。 **これだけ覚えていれば使えます。**  
-`ros2 aliases help` を意味しています。
+これは **r**os2 **a**liases **help** を意味しています。
 末尾には主要な環境変数の現在の値も表示します。確認に使用してください。
 以下に機能を一覧で表示しますが、実際の使用イメージを掴みたい場合には、このページの最後に記載する[ハンズオンチュートリアル](#ハンズオンチュートリアル)をご覧ください。
 
@@ -69,15 +69,15 @@ ROS 2 を開発するときに便利なエイリアス(関数)を提供します
     setenvfile ~/ros2_ws/.env
     ```
 - `setrws` で ROS 2 workspace を設定します。
-    `set ROS WORKSPACE` を意味しています。
+    **set** **R**OS **W**ORK**S**PACE` を意味しています。
 - `setrdi` で ROS_DOMAIN_ID をその引数の値に設定します。
-    `set ROS Domain ID` を意味しています。
+    **set** **R**OS **D**omain **I**D` を意味しています。
     ```
     setrdi 40
     ```
     `setrdi 0` とすると ROS_LOCALHOST_ONLY=1 も設定されます。
 - `setcbc` でビルドコマンドをその引数の文字列に設定します。
-    `set colcon build command` を意味しています。
+    **set** **c**olcon **b**uild **c**ommand` を意味しています。
     ```
     setcbc "colcon build --symlink-install --parallel-workers $(nproc)"
     ```
@@ -179,6 +179,7 @@ rm -rf $HOME/.local/ros2-aliases
 
 Ubuntu 22.04 に ROS 2 Humble をインストール済みの PC で操作する例を示します。
 後に出てくる `ROS_DISTRO` の部分を対応するバージョンに変更すれば異なる環境でも動くはずです。
+このページの[準備](#準備)と[インストール](#インストール)が完了していることを前提とします。
 
 ## ワークスペースの設定
 
@@ -194,7 +195,7 @@ git clone https://github.com/kimushun1101/teleop_joy_component_template.git
 ```
 setenvfile
 ```
-editor が立ち上がるので、以下のように編集・保存して閉じる。
+editor が立ち上がるので、以下のように編集・保存して閉じてください。
 ```
 # For ros2-aliases
 ROS_DISTRO=humble # iron, jazzy, etc.
@@ -213,6 +214,7 @@ echo $ROS_WORKSPACE
 rahelp
 ```
 ros2-aliases のコマンドリストとともに、現在の環境変数を確認できます。
+
 以上で ros2-aliases にワークスペースを設定することができました。
 
 ## 環境変数の変更
@@ -240,10 +242,14 @@ setenvfile ~/ros2-aliases/.env
 引数として渡す場合には、`editor` は開かれません。
 `rahelp` で `ROS_DOMAIN_ID` が変更されていることを確認しましょう。
 
-`.env` ファイルを用意するまでもない場合には、`setrws`, `setrdi`, `setcbc` コマンドで対応してください。
+`.env` ファイルを用意するまでもない場合には、`setrws`, `setrdi`, `setcbc` コマンドで個別に対応することも可能です。
 ```
 setrws ~/ros2_ws # ワークスペースに src ディレクトリがない場合にはエラーになります。
+```
+```
 setrdi 50
+```
+```
 setcbc "colcon build --parallel-workers $(nproc)"
 ```
 
@@ -259,14 +265,14 @@ roscd
 > tb3_controller_cpp
 ```
 というような選択画面に移ります。
-方向キーで選択してもよいですし、キーボードで少しタイピングすることで fuzzy find もしてくれます。
+方向キーで選択してもよいですし、少しの文字列をタイピングすることで fuzzy find も可能です。
 選択するとそのディレクトリに移動します。
-選択を Esc で抜けると `ROS_WORKSPACE` ディレクトリに移動します。
+Esc で選択画面を抜けると `ROS_WORKSPACE` ディレクトリに移動します。
 
 ## ワークスペースのビルド
 
 以下のデモでは、`tb3_controller_cpp` パッケージの使用をしていくのですが、このパッケージを使用するために必要な依存パッケージが存在します。
-これらを `rosdep install` でインストールしますが、これをオプションまで含めて暗記している人はほとんどいないと思います。
+これらを `rosdep install` でインストールしますが、そのオプションまで含めて暗記している人はほとんどいないと思います。
 そこで、ros2-aliases の `rosdep_install` コマンドを使用しましょう。
 ちゃんと整備されているパッケージであれば、依存関係を解決してくれます。
 `rosdep` で依存関係を解決できないパッケージに対しては、`roscd` コマンドでパッケージのディレクトリに移動し、それぞれの README.md などを確認して環境構築を行ってください。
@@ -292,11 +298,19 @@ cbp
 ここでは `tb3_controller_cpp` を選択してみましょう。
 すると、`tb3_controller_cpp` だけビルドされたことがわかります。
 
-ちなみに、`cb` でも `cbp` でも、`source ./install/setup.bash` まで自動で行うため、すぐにビルドした ROS パッケージを使用できます。
+また、`cbp` コマンドには複数のパッケージを引数として渡すこともできます。
+さらに、引数入力には Tab 補完が効くようになっています。
+たとえば、`cbp tb3 [tab]` で `cbp tb3_controller_cpp` まで補完され、スペースを挟んで続けて `teleop_joy_component` も補完入力して
+```
+cbp tb3_controller_cpp teleop_joy_component
+```
+とすれば、この 2 つのパッケージのみをビルドすることが可能です。
+
+ちなみに、`cb` でも `cbp` でも、`source ./install/setup.bash` まで自動で行うため、ビルドした ROS パッケージをそのまますぐに使用できます。
 
 ## 実行
 
-それでは、実際にノードを立ち上げてみましょう。
+それでは実際にノードを立ち上げてみましょう。
 たとえば `ros2 run tb3_controller_cpp tb3_controller_node` を立ち上げたいとします。
 長いですね。またパッケージ名やノード名をうろ覚えですと面倒臭さが倍増します。
 ros2-aliases では `rrun` コマンドが使用できます。
@@ -319,21 +333,29 @@ ros2 run tb3_controller_cpp tb3_controller_node
 というような表示がされ、なにか動いていそうです。
 ここまで確認できましたら、このノードは `Ctrl + C` で終了させましょう。
 
-同様の要領で `ros2 launch` も試してみましょう。
+同じ要領で `ros2 launch` も試してみましょう。
 ros2-aliases の `rlaunch` コマンドを実行してください。
 ```
 rlaunch
 ```
 ここで `tb3_controller_cpp` を選択すると、`simulation_and_controller.launch.yaml` と `turtlebot3_and_controller.launch.yaml` の２つの選択肢がでますが、今回は実機ではなくシミュレーターを起動することとし、`simulation_and_controller.launch.yaml` を選択します。
-Gazebo で Turtlebot3 が P 制御されている様子を確認できるはずです。
+Gazebo で Turtlebot3 が制御されている様子を確認できるはずです。
+
+別のターミナルで
+```
+ros2 topic pub /xd std_msgs/msg/Float32 "data: 3.0"
+```
+とコマンドすることで目標位置を変更して、Turtlebot3 を動かすことができます。
+詳細についてはここでは割愛しますが、[tb3_controller の説明](https://github.com/kimushun1101/tb3_controller_cpp?tab=readme-ov-file#パラメーター調整)をご覧ください。
 
 ## デバッグ
 
 `simulation_and_controller.launch.yaml` を立ち上げたまま以下の操作を行ってください。
 
 現在出ているトピックを `rtlist` や `rtecho`、`rtinfo` などで確認しましょう。
+これらは **r**os2 **t**opic **list**、**r**os2 **t**opic **echo**、**r**os2 **t**opic **info** のコマンドを実行してくれます。
 同様に `rnlist`, `rninfo`, `rplist`, `rpget` なども試してみてください。
-fzf による検索になれてくると、直感的に何が起こるか推測できると思います。
+ROS 2 のコマンドを知っていれば、直感的に何が起こるか推測できるかと思います。
 
 tf まわりのコマンドとしては `view_frames` があり、`frames_タイムスタンプ.pdf` が出力されるのでその中身を確認してみてください。
 `tf_echo [source_frame] [target_frame] (namespace)` も使えます。
@@ -347,7 +369,7 @@ tf_echo base_footprint base_scan
 ここまで一連の開発の流れを通して、ros2-aliases の基本的な使い方が習得できたかと思います。
 ハンズオンチュートリアルを終了とし、後片付けを行いましょう。
 まずは `setenvfile` コマンドで設定をもとに戻します。
-とくに `ROS_WORKSPACE` は、あなたが今開発を進めているワークスペースにセットするとよいでしょう。
+とくに `ROS_WORKSPACE` は、ご自身が現在開発中のワークスペースに設定するとよいでしょう。
 あとは今回のお試しのために作成した `ros2-aliases_ws` を削除したら完了です。
 ```
 rm -rf ~/ros2-aliases_ws
