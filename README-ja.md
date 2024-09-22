@@ -19,6 +19,7 @@ ROS 2 を開発するときに便利なエイリアス(関数)を提供します
     ```
     sudo update-alternatives --config editor
     ```
+    VS Code なども選べますが `vim` や `nano` など CLI エディターを設定することをオススメします。
 
 # インストール
 
@@ -36,7 +37,7 @@ ROS 2 を開発するときに便利なエイリアス(関数)を提供します
     source ~/.bashrc
     setenvfile
     ```
-    `editor` で設定ファイルが開かれますので編集して保存してください。
+    `editor` で [.env_example](/.env_example) をコピーした設定ファイル `.env` が開かれますので編集、保存して、閉じてください。
     `#` はコメントアウトです。
     `ROS_WORKSPACE` をご自身がよく使うワークスペースのパスに設定することを推奨します。
     ```
@@ -163,3 +164,60 @@ rm -rf $HOME/.local/ros2-aliases
 # 引用
 
 - `ros2_utils.bash` : https://github.com/tonynajjar/ros2-aliases by Tony Najjar
+
+
+---
+
+# おまけ（簡単なチュートリアル）
+
+Ubuntu 22.04 に ROS 2 Humble をインストール済みの PC で操作する例を示します。
+
+## ワークスペースの設定
+
+ホームディレクトリに `ros2-aliases_ws` を作成して、`src` ディレクトリにいくつかパッケージを追加していきましょう。
+```
+mkdir -p ~/ros2-aliases_ws/src
+cd ~/ros2-aliases_ws/src
+git clone https://github.com/kimushun1101/tb3_controller_cpp.git
+git clone https://github.com/kimushun1101/teleop_joy_component_template.git
+```
+
+つぎに ros2-aliases の `setenvfile` コマンドで `.env` ファイルを以下のように編集しましょう。
+```
+setenvfile
+# editor が立ち上がるので、以下のように編集・保存して閉じる。
+# For ros2-aliases
+ROS_DISTRO=humble # jazzy
+ROS_WORKSPACE=${HOME}/ros2-aliases_ws
+COLCON_BUILD_CMD="colcon build --symlink-install --parallel-workers $(nproc)"
+# ROS_DOMAIN_ID=30
+# 以下略
+```
+以上でワークスペースの設定は完了です。
+
+## ワークスペースのビルド
+`cb` コマンドでカレントディレクトリがどこであっても `ros2-aliases_ws` がビルドできることを確認しましょう。
+たとえば、ホームディレクトリから `cb` すると以下の通りです。
+```
+cd
+pwd
+cb
+```
+ダウンロードディレクトリであっても同じ結果が得られます。
+```
+cd ~/Downloads
+pwd
+cb
+```
+
+## 単体パッケージのビルド
+
+## 実行
+
+## デバッグ
+
+
+## 後片付け
+
+## おわりに
+
