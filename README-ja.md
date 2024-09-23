@@ -269,6 +269,10 @@ roscd
 選択するとそのディレクトリに移動します。
 Esc で選択画面を抜けると `ROS_WORKSPACE` ディレクトリに移動します。
 
+また、`roscd` コマンドにはパッケージ名を引数として渡すこともできます。
+さらに、引数入力には Tab 補完が効くようになっています。
+たとえば、`roscd tb3[tab]` で `roscd tb3_controller_cpp` まで補完され、Enter キーを押せば、`~/ros2-aliases_ws/src/tb3_controler_cpp` に移動します。
+
 ## ワークスペースのビルド
 
 以下のデモでは、`tb3_controller_cpp` パッケージの使用をしていくのですが、このパッケージを使用するために必要な依存パッケージが存在します。
@@ -298,13 +302,13 @@ cbp
 ここでは `tb3_controller_cpp` を選択してみましょう。
 すると、`tb3_controller_cpp` だけビルドされたことがわかります。
 
-また、`cbp` コマンドには複数のパッケージを引数として渡すこともできます。
-さらに、引数入力には Tab 補完が効くようになっています。
-たとえば、`cbp tb3 [tab]` で `cbp tb3_controller_cpp` まで補完され、スペースを挟んで続けて `teleop_joy_component` も補完入力して
+また、`cbp` コマンドもパッケージを引数として渡すことができ、引数入力には Tab 補完が効くようになっています。
+さらに、引数として複数のパッケージを渡すことも可能です。
+たとえば、`cbp tb3[tab]` で `cbp tb3_controller_cpp` まで補完され、スペースを挟んで続けて `teleop_joy_component` も補完入力して
 ```
 cbp tb3_controller_cpp teleop_joy_component
 ```
-とすれば、この 2 つのパッケージのみをビルドすることが可能です。
+と入力すれば、この 2 つのパッケージのみをビルドします。
 
 ちなみに、`cb` でも `cbp` でも、`source ./install/setup.bash` まで自動で行うため、ビルドした ROS パッケージをそのまますぐに使用できます。
 
