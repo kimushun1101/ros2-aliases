@@ -373,7 +373,7 @@ tf_echo base_footprint base_scan
 ハンズオンチュートリアルを終了とし、後片付けを行いましょう。
 まずは `setenvfile` コマンドで設定を元に戻します。
 とくに `ROS_WORKSPACE` は、ご自身が現在開発中のワークスペースに設定するとよいでしょう。
-あとは今回のお試しのために作成した `ros2-aliases_ws` を削除したら完了です。
+あとはこのハンズオンのために作成した `ros2-aliases_ws` を削除したら完了です。
 ```
 rm -rf ~/ros2-aliases_ws
 ```
