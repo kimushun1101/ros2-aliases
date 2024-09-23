@@ -235,7 +235,7 @@ COLCON_BUILD_CMD="colcon build --symlink-install --parallel-workers $(nproc)"
 # 以下略
 ```
 `ROS_WORKSPACE` のときと同様に `ROS_DOMAIN_ID` の先頭のコメントアウトを意味する `#` を外し、`30` を `40` に変更しましょう。
-また、ros2-aliases に関係の無い環境変数も設定できます。
+また、ros2-aliases に無関係な環境変数も設定できます。
 このハンズオンで後に実行するノードのために、`LIBGL_ALWAYS_SOFTWARE` と `TURTLEBOT3_MODEL` も以下のように設定してください。
 ```
 # For ros2-aliases
@@ -255,6 +255,7 @@ setenvfile ~/ros2-aliases/.env
 ```
 引数として渡す場合には、`editor` は開かれません。
 `rahelp` で `ROS_DOMAIN_ID` が変更されていることを確認しましょう。
+`TURTLEBOT3_MODEL` などは `echo $TURTLEBOT3_MODEL` で確認してください。
 
 `.env` ファイルを用意するまでもない場合には、`setrws`, `setrdi`, `setcbc` コマンドで個別に対応することも可能です。
 ```
@@ -266,6 +267,7 @@ setrdi 50
 ```
 setcbc "colcon build --parallel-workers $(nproc)"
 ```
+それぞれ `rahelp` で確認してみてください。
 
 ## パッケージの確認
 
@@ -279,7 +281,7 @@ roscd
 > tb3_controller_cpp
 ```
 というような選択画面に移ります。
-方向キーで選択してもよいですし、少しの文字列をタイピングすることで fuzzy find も可能です。
+方向キーで選択してもよいですし、少しの文字列をタイピングすることであいまい検索も可能です。
 選択するとそのディレクトリに移動します。
 Esc で選択画面を抜けると `ROS_WORKSPACE` ディレクトリに移動します。
 
