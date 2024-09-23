@@ -235,7 +235,21 @@ COLCON_BUILD_CMD="colcon build --symlink-install --parallel-workers $(nproc)"
 # 以下略
 ```
 `ROS_WORKSPACE` のときと同様に `ROS_DOMAIN_ID` の先頭のコメントアウトを意味する `#` を外し、`30` を `40` に変更しましょう。
-保存して閉じたあと、`setenvfile` コマンドに渡してみましょう。
+また、ros2-aliases に関係の無い環境変数も設定できます。
+このハンズオンで後に実行するノードのために、`LIBGL_ALWAYS_SOFTWARE` と `TURTLEBOT3_MODEL` も以下のように設定してください。
+```
+# For ros2-aliases
+ROS_DISTRO=humble # iron, jazzy, etc.
+ROS_WORKSPACE=${HOME}/ros2-aliases_ws
+ROS_DOMAIN_ID=40
+COLCON_BUILD_CMD="colcon build --symlink-install --parallel-workers $(nproc)"
+
+# Environment variables unrelated to ros2-aliases can also be set.
+LIBGL_ALWAYS_SOFTWARE=1
+TURTLEBOT3_MODEL=burger
+# 以下略
+```
+`.env` を保存して閉じたあと、`setenvfile` コマンドに渡してみましょう。
 ```
 setenvfile ~/ros2-aliases/.env
 ```

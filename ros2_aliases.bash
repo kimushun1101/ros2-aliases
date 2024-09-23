@@ -45,6 +45,8 @@ function setenvfile {
       fi
       # Ignore comments on the right end 
       value=$(echo "$value" | sed 's/ #.*//')
+      # Remove trailing spaces (including newlines)
+      value=$(echo "$value" | sed 's/[[:space:]]*$//')
       # Evaluate and expand commands part $() 
       value=$(echo "$value" | sed -E 's/\$\([^)]*\)/$(eval echo \0)/g')
       # Expand environment variables part ${} 
