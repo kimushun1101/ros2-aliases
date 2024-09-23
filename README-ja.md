@@ -57,12 +57,14 @@ ROS 2 を開発するときに便利なエイリアス(関数)を提供します
     `set environment` を意味しています。
     引数なしで実行した場合には、[インストールの3](#インストール)で説明した動作をします。
     環境変数の説明は以下の表のとおりです。
+    
     | Environment variable | Description |
     | --- | --- |
     | `ROS_DISTRO` | humble, Iron, Jazzy など |
     | `ROS_WORKSPACE` | 使用するワークスペースのフルパス |
     | `ROS_DOMAIN_ID` | [公式ページ](https://docs.ros.org/en/humble/Concepts/About-Domain-ID.html) を参照 |
     | `COLCON_BUILD_CMD` | ビルドのコマンド |
+
     環境変数ファイルを引数として渡すことで、たとえばワークスペース独自の環境変数を設定することもできます。
     ```
     # ~/ros2_ws に .env ファイルを作成しておく
