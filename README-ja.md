@@ -195,7 +195,7 @@ git clone https://github.com/kimushun1101/teleop_joy_component_template.git
 ```
 setenvfile
 ```
-editor が立ち上がるので、以下のように編集・保存して閉じてください。
+`editor` が立ち上がるので、以下のように編集・保存して閉じてください。
 ```
 # For ros2-aliases
 ROS_DISTRO=humble # iron, jazzy, etc.
@@ -289,8 +289,6 @@ ros2-aliases の `cb` コマンドを使えば、カレントディレクトリ�
 cb
 ```
 
-## 単体パッケージのビルド
-
 毎回ワークスペースのすべてのパッケージをビルドしていると時間がかかり面倒です。
 `colcon build` には `--packages-select` オプションがあり、指定したパッケージだけビルドする仕組みがあります。
 しかし、毎回 `--packages-select` や該当パッケージを手打ちするのは大変です。
@@ -311,6 +309,7 @@ cbp tb3_controller_cpp teleop_joy_component
 と入力すれば、この 2 つのパッケージのみをビルドします。
 
 ちなみに、`cb` でも `cbp` でも、`source ./install/setup.bash` まで自動で行うため、ビルドした ROS パッケージをそのまますぐに使用できます。
+また、ファイルの変更によってビルドがうまく通らなくなってしまった場合に、`build`, `install`, `log` を削除して再ビルドされる方のために、`cbrm` や `cbprm` コマンドなども用意しております。
 
 ## 実行
 
@@ -372,7 +371,7 @@ tf_echo base_footprint base_scan
 
 ここまで一連の開発の流れを通して、ros2-aliases の基本的な使い方が習得できたかと思います。
 ハンズオンチュートリアルを終了とし、後片付けを行いましょう。
-まずは `setenvfile` コマンドで設定をもとに戻します。
+まずは `setenvfile` コマンドで設定を元に戻します。
 とくに `ROS_WORKSPACE` は、ご自身が現在開発中のワークスペースに設定するとよいでしょう。
 あとは今回のお試しのために作成した `ros2-aliases_ws` を削除したら完了です。
 ```
