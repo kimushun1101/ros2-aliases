@@ -16,8 +16,8 @@ Collection of functions and aliases for ROS2 development
 
 - Bash
 
-- editor  
-    (Optional) Configuration of `editor` is recommended.
+- (Optional) editor  
+    Configuration of `editor` is recommended.
     ```
     sudo update-alternatives --config editor
     ```
@@ -31,7 +31,7 @@ Collection of functions and aliases for ROS2 development
     ```
     echo 'source $HOME/.local/ros2-aliases/ros2_aliases.bash' >> ~/.bashrc
     ```
-3. Apply the bashrc update and edit .env for initial settings:
+3. (Optional) Apply the bashrc update and edit .env for initial settings:
     ```
     source ~/.bashrc
     setenvfile

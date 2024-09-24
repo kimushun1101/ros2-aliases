@@ -14,8 +14,8 @@ ROS 2 を開発するときに便利なエイリアス(関数)を提供します
     ```
     sudo apt install fzf
     ```
-- editor  
-    (任意) `editor` コマンドで開くエディターを指定しておくことをオススメします。
+- (任意) editor  
+    `editor` コマンドで開くエディターを指定しておくことをオススメします。
     ```
     sudo update-alternatives --config editor
     ```
@@ -32,7 +32,7 @@ ROS 2 を開発するときに便利なエイリアス(関数)を提供します
     ```
     echo 'source $HOME/.local/ros2-aliases/ros2_aliases.bash' >> ~/.bashrc
     ```
-3. .bashrc の変更を反映させた後、環境変数ファイルを設定しましょう。
+3. (任意) .bashrc の変更を反映させた後、環境変数ファイルを設定しましょう。
     ```
     source ~/.bashrc
     setenvfile
