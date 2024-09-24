@@ -49,7 +49,7 @@ The current key environment variables can also be viewed.
 
 ## Environment variables
 
-- `setenvfile` sets environment variables. This function can also take an env file as an argument.
+- `setenvfile` sets environment variables with a file. This function can also take an env file as an argument.
     | Environment variable | Description |
     | --- | --- |
     | `ROS_DISTRO` | humble, Iron, Jazzy, etc. |
