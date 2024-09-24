@@ -285,11 +285,11 @@ roscd
 というような選択画面に移ります。
 方向キーで選択してもよいですし、少しの文字列をタイピングすることであいまい検索も可能です。
 選択するとそのディレクトリに移動します。
-Esc で選択画面を抜けると `ROS_WORKSPACE` ディレクトリに移動します。
+選択画面中に Esc キーを押下すると `ROS_WORKSPACE` ディレクトリに移動します。
 
 また、`roscd` コマンドにはパッケージ名を引数として渡すこともできます。
 さらに、引数入力には Tab 補完が効くようになっています。
-たとえば、`roscd tb3[tab]` で `roscd tb3_controller_cpp` まで補完され、Enter キーを押せば、`~/ros2-aliases_ws/src/tb3_controler_cpp` に移動します。
+たとえば、`roscd tb3` までタイピングしたところで Tab キーを押下すると `roscd tb3_controller_cpp` まで補完され、Enter キーを押せば、`~/ros2-aliases_ws/src/tb3_controler_cpp` に移動します。
 
 ## ワークスペースのビルド
 
@@ -320,7 +320,7 @@ cbp
 
 また、`cbp` コマンドもパッケージを引数として渡すことができ、引数入力には Tab 補完が効くようになっています。
 さらに、引数として複数のパッケージを渡すことも可能です。
-たとえば、`cbp tb3[tab]` で `cbp tb3_controller_cpp` まで補完され、スペースを挟んで続けて `teleop_joy_component` も補完入力して
+たとえば、`cbp tb3_controller_cpp` とタイピング（Tab 補完入力）した後で、スペースを挟んで続けて `teleop_joy_component` も補完入力して
 ```
 cbp tb3_controller_cpp teleop_joy_component
 ```
