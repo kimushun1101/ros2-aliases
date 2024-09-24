@@ -54,7 +54,7 @@ ROS 2 を開発するときに便利なエイリアス(関数)を提供します
 ## 環境変数
 
 - `setenvfile` でデフォルトの環境変数を設定します。
-    **s**et **env**ironment variables with a **file** を意味しています。
+    **set** **env**ironment variables with a **file** を意味しています。
     引数なしで実行した場合には、[インストールの3](#インストール)で説明した動作をします。
     環境変数の説明は以下の表のとおりです。
 
