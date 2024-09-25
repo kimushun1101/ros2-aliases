@@ -39,7 +39,7 @@ ROS 2 を開発するときに便利なエイリアス(関数)を提供します
     ```
     `editor` で [.env_example](/.env_example) をコピーした設定ファイル .env が開かれますので編集、保存して、閉じてください。
     `#` はコメントアウトです。
-    `ROS_WORKSPACE` をご自身が現在開発中のワークスペースのパスに設定することを推奨します。
+    `ROS_WORKSPACE` をご自身が現在開発中のワークスペースのパスに変更することを推奨します。
     ```
     ROS_WORKSPACE=${HOME}/ros2_ws
     ```
@@ -206,7 +206,7 @@ ROS_WORKSPACE=${HOME}/ros2-aliases_ws
 COLCON_BUILD_CMD="colcon build --symlink-install --parallel-workers $(nproc)"
 # 以下略
 ```
-具体的には `ROS_WORKSPACE` の先頭のコメントアウトを意味する `#` を外し、`ros2_ws` を `ros2-aliases_ws` に変更しましょう。
+具体的には `ROS_WORKSPACE` の `ros2_ws` を `ros2-aliases_ws` に変更しましょう。
 `ROS_WORKSPACE` が変更されたことは `echo` コマンドで確認できます。
 ```
 echo $ROS_WORKSPACE
@@ -236,7 +236,7 @@ ROS_DOMAIN_ID=40
 COLCON_BUILD_CMD="colcon build --symlink-install --parallel-workers $(nproc)"
 # 以下略
 ```
-`ROS_WORKSPACE` のときと同様に `ROS_DOMAIN_ID` の先頭のコメントアウトを意味する `#` を外し、`30` を `40` に変更しましょう。
+ここでは `ROS_DOMAIN_ID` の先頭のコメントアウトを意味する `#` を外し、`30` を `40` に変更しましょう。
 また、ros2-aliases に無関係な環境変数も設定できます。
 このハンズオンで後に実行するノードのために、`LIBGL_ALWAYS_SOFTWARE` と `TURTLEBOT3_MODEL` も以下のように設定してください。
 ```
