@@ -224,8 +224,8 @@ ros2-aliases のコマンドリストとともに、現在の環境変数を確�
 特定のターミナルでは、環境変数をデフォルトから変更したいこともあるかもしれません。
 そのために、`setenvfile` に引数として、同じフォーマットの異なるファイルを与えることもできます。
 ```
-cp ~/.local/ros2-aliases/.env_example ~/ros2-aliases/.env
-editor ~/ros2-aliases/.env
+cp ~/.local/ros2-aliases/.env_example ~/ros2-aliases_ws/.env
+editor ~/ros2-aliases_ws/.env
 ```
 例えばここで `ROS_DOMAIN_ID` を 40 とします。
 ```
@@ -253,7 +253,7 @@ TURTLEBOT3_MODEL=burger
 ```
 `.env` を保存して閉じたあと、`setenvfile` コマンドに渡してみましょう。
 ```
-setenvfile ~/ros2-aliases/.env
+setenvfile ~/ros2-aliases_ws/.env
 ```
 引数として渡す場合には、`editor` は開かれません。
 `rahelp` で `ROS_DOMAIN_ID` が変更されていることを確認しましょう。
