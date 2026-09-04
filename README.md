@@ -79,6 +79,7 @@ The current key environment variables can also be viewed.
 | --- | --- |
 | `ros2 topic list` | `rtlist` |
 | `ros2 topic echo` | `rtecho`|
+| `ros2 topic hz` | `rthz`|
 | `ros2 topic info` | `rtinfo`|
 | `ros2 topic bw` | `rtbw`|
 
@@ -115,7 +116,7 @@ The current key environment variables can also be viewed.
 | Command | Alias | Arguments |
 | --- | --- | --- |
 | `ros2 run tf2_tools view_frames` | `view_frames` | namespace of TF topic [Optional] |
-| `ros2 run tf2_ros tf2_echo` | `tf2_echo`| source_frame [Required], target_frame [Required], namespace of TF topic [Optional] |
+| `ros2 run tf2_ros tf2_echo` | `tf_echo`| source_frame [Required], target_frame [Required], namespace of TF topic [Optional] |
 
 ## Colcon
 
@@ -123,6 +124,7 @@ The current key environment variables can also be viewed.
 | --- | --- |
 | `colcon build --symlink-install` | `cb` |
 | `colcon build --symlink-install --packages-select` | `cbp`|
+| `colcon build --symlink-install --packages-skip` | `cbs`| package 1 [Optional] ... package n [Optional] |
 | `colcon test --packages-select` and `colcon test-result --verbose` | `ctp`|
 | `colcon build --symlink-install --cmake-clean-cache ` | `cbcc`|
 | `colcon build --symlink-install --cmake-clean-first ` | `cbcf`|
