@@ -86,6 +86,7 @@ function rahelp {
   echo "`cyan cbcf`   : colcon build with clean first"
   echo "`cyan cbrm`   : colcon build after rm -rf build install log"
   echo "`cyan cbp`    : colcon build with packages select (Both fzf and tab completion are valid)"
+  echo "`cyan cbs`    : colcon build with packages skip (Both fzf and tab completion are valid)"
   echo "`cyan cbprm`  : colcon build with packages select after rm -rf build install log for selected packages"
   echo "`cyan ctp`    : colcon test with packages select and colcon test-result --verbose"
   green "--- roscd ---"
@@ -218,6 +219,17 @@ function cbp {
   history -s "cbp $pkg_name"
 }
 
+function cbs {
+  _check_ROSWS_env && return
+  local pkg_name="$@"
+  if [ -z "$1" ]; then
+    pkg_name=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done | fzf)
+    [[ -z "$pkg_name" ]] && return
+  fi
+  colcon_build_command_exec "$COLCON_BUILD_CMD --packages-skip $pkg_name"
+  history -s "cbs $pkg_name"
+}
+
 function cbprm {
   _check_ROSWS_env && return
   local pkg_names="$@"
@@ -261,7 +273,7 @@ _pkg_name_complete() {
   local pkg_names=$(find $ROS_WORKSPACE/src -name "package.xml" -print0 | while IFS= read -r -d '' file; do grep -oP '(?<=<name>).*?(?=</name>)' "$file"; done)
   COMPREPLY=( $(compgen -W "$pkg_names" -- "${COMP_WORDS[$COMP_CWORD]}") )
 }
-complete -F _pkg_name_complete cbp cbprm ctp
+complete -F _pkg_name_complete cbp cbs cbprm ctp
 
 # ---roscd---
 function roscd {
