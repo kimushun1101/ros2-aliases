@@ -59,7 +59,7 @@ function setenvfile {
   fi
 }
 
-cp -n $ROS2_ALIASES_DIR/.env_example $ROS2_ALIASES_DIR/.env
+cp --update=none $ROS2_ALIASES_DIR/.env_example $ROS2_ALIASES_DIR/.env
 setenvfile $ROS2_ALIASES_DIR/.env
 
 # source other scripts
