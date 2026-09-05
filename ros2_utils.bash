@@ -66,6 +66,16 @@ function rtecho {
     history -s $CMD
 }
 
+function rthz {
+    local TOPIC=$(ros2 topic list | fzf)
+    [[ -z "$TOPIC" ]] && return
+    CMD="ros2 topic hz $TOPIC"
+    echo $CMD
+    $CMD
+    history -s rthz
+    history -s $CMD
+}
+
 function rtinfo {
     local TOPIC=$(ros2 topic list | fzf)
     [[ -z "$TOPIC" ]] && return
@@ -241,6 +251,20 @@ function cbp {
     cyan "$CMD"
     $CMD
     history -s cbp $@
+    history -s $CMD
+}
+
+function cbs {
+    if [ $# -eq 0 ]; then
+        PACKAGE=$(colcon list -n | fzf)
+        [[ -z "$PACKAGE" ]] && return
+        local CMD="colcon build --symlink-install --packages-skip $PACKAGE"
+    else
+        local CMD="colcon build --symlink-install --packages-skip $@"
+    fi
+    echo $CMD
+    $CMD
+    history -s cbs $@
     history -s $CMD
 }
 
